@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = ruck
+
+[report]
+ignore_errors = True
