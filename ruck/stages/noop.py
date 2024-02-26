@@ -1,9 +1,11 @@
 """
-Do Nothing
+Copyright (c) 2024 Wind River Systems, Inc.
 
-This stage does nothing useful.
+SPDX-License-Identifier: Apache-2.0
+
 """
 from ruck.stages.base import Base
+
 
 class NoopPlugin(Base):
     def __init__(self, state, config, workspace):

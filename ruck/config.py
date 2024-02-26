@@ -1,6 +1,12 @@
+"""
+Copyright (c) 2024 Wind River Systems, Inc.
+
+SPDX-License-Identifier: Apache-2.0
+"""
 import yaml
 
 from ruck import exceptions
+
 
 class Config(object):
     def __init__(self, state):

@@ -1,10 +1,16 @@
+"""
+Copyright (c) 2024 Wind River Systems, Inc.
+
+SPDX-License-Identifier: Apache-2.0
+"""
 import logging
 import shutil
 
 from stevedore import driver
 
-from ruck import exceptions
 from ruck.config import Config
+from ruck import exceptions
+
 
 class Build(object):
     def __init__(self, state):
@@ -19,7 +25,7 @@ class Build(object):
         self.logging.info("Loading configuration file.")
         if not self.state.config.exists():
             exceptions.ConfigError(
-            f"Failed to load configuration: {self.state.config}")
+                f"Failed to load configuration: {self.state.config}")
         config = self.config.load_config()
 
         self.logging.info("Setting up workspace.")

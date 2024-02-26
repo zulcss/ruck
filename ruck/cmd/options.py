@@ -1,8 +1,14 @@
+"""
+Copyright (c) 2024 Wind River Systems, Inc.
+
+SPDX-License-Identifier: Apache-2.0
+"""
 import pathlib
 
 import click
 
 from ruck.cmd import State
+
 
 def config_option(f):
     def callback(ctxt, param, value):
