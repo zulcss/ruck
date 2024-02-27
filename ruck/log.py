@@ -13,7 +13,7 @@ from systemd.journal import JournalHandler
 
 def setup_log(debug=False):
     level = logging.DEBUG if debug else logging.INFO
-    fmt = "%(message)s"
+    fmt = "%(asctime)s %(message)s"
 
     rootLogger = logging.getLogger()
     rootLogger.setLevel(logging.NOTSET)

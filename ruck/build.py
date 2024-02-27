@@ -40,7 +40,7 @@ class Build(object):
             self.workspace,
             dirs_exist_ok=True)
 
-        options = config.get("paraneters", {})
+        options = config.get("parameters", {})
         steps = config.get("steps")
         for step in steps:
             options["options"] = step.get("options")

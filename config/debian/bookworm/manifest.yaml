@@ -1,0 +1,10 @@
+---
+name: ExampleOs
+parameters:
+  target: rootfs.tar.gz
+steps:
+  - step: bootstrap
+    options:
+      suite: bookworm
+
+      

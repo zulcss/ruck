@@ -1,0 +1,41 @@
+Construct the target rootfs with mmdebstrap tool.
+
+# Yaml syntax
+- name: "mmdebstrap example"
+  action: bootstrap
+  suite: bookworm
+  target: rootfs.tar.gz
+
+Mandatory properties:
+
+ - suite: release code name or symbolic name (ex: testing)
+
+ - target: Release artifact to create. Option may be either the path to a
+   directory, the path to a tarball filename the path to a squashfs image, 
+   the path to an ext2 image.
+
+Optionsal properties:
+
+  - packages: List of packages which will be intalled in addition to the
+    packages intalled by the specified varitant.
+
+  - variant: Package set to intall.
+
+  - components: List of additional repository components to install. 
+    (ex: main, contrib non-free, etc)
+
+  - hooks: List of scripts in a directory to execute.
+
+  - setup-hooks: List of commands to execute right after initila setup 
+    (directory creation, configuratio of apt and dpkg...)
+
+  - extract-hooks: List of commands to execute after the "Essential:yes"
+    packages have been extracted but before installing them.
+
+  - customize-hook: List of commands to execute after the chroot is setup and 
+    all packages got intalled before the final cleanup actions are carried out.
+
+  - essential-hook: List of caommands to execute after the "Essential:yes"
+    packages have been installed but before installing the remaning packages
+
+Please see the mmdebstrap man page for more information.
