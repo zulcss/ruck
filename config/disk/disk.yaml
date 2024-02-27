@@ -1,0 +1,9 @@
+---
+name: ExampleOs
+parameters:
+  image: demo.img
+steps:
+  - step: disk
+    options:
+      definition: partitions
+      size: 1G
