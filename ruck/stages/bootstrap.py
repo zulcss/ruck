@@ -64,53 +64,53 @@ class BootstrapPlugin(Base):
         ]
 
         # Install extra packages.
-        packages = self.option.get("packages", None)
+        packages = self.options.get("packages", None)
         if packages:
             cmd.extend([f"--include={','.join(packages)}"])
 
+        customize_hooks = self.options.get("customize-hooks", None)
+        if customize_hooks:
+            cmd.extend([f"--customize-hook={hook}"
+                        for hook in customize_hooks])
+
         # Enable extra components (main, non-free, etc).
-        components = self.option.get("components", None)
+        components = self.options.get("components", None)
         if components:
             cmd.extend([f"--components={','.join(components)}"])
         cmd.extend([suite, target])
         utils.run_command(cmd, cwd=self.workspace)
 
-        # Enable extra components (main, non-free, etc).
-        components = self.option.get("components", None)
-        if components:
-            cmd.extend([f"--components={','.join(components)}"])
-
         # Enable variants.
-        variant = self.option.get("variant", None)
+        variant = self.options.get("variant", None)
         if variant:
             cmd.extend([f"--variant={variant}"])
 
         # Enable hooks.
-        hooks = self.option.get("hooks", None)
+        hooks = self.options.get("hooks", None)
         if hooks:
             cmd.extend([f"--hook-directory={hook}" for hook in hooks])
 
         # Enable setup hooks
-        setup_hooks = self.option.get("setup-hooks", None)
+        setup_hooks = self.options.get("setup-hooks", None)
         if setup_hooks:
             cmd.extend([f"--setup-hook={hook}" for hook in setup_hooks])
 
         # Enable extract hooks.
-        extract_hooks = self.option.get("extract-hook", None)
+        extract_hooks = self.options.get("extract-hook", None)
         if extract_hooks:
             cmd.extend(
                 [f"--extract-hook={hook}" for hook in extract_hooks])
 
         # Enable customization hooks.
-        customize_hooks = self.option.get("customize-hooks", None)
+        customize_hooks = self.options.get("customize-hooks", None)
         if customize_hooks:
             cmd.extend([f"--customize-hook={hook}"
                         for hook in customize_hooks])
-
         # Enable essential hooks.
-        essential_hooks = self.option.get("essential-hooks", None)
+        essential_hooks = self.options.get("essential-hooks", None)
         if essential_hooks:
             cmd.extend([f"--essential-hook={hook}"
                        for hook in essential_hooks])
 
         cmd.extend([suite, target])
+        utils.run_command(cmd, cwd=self.workspace)

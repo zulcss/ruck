@@ -2,8 +2,7 @@
 name: ExampleOs
 parameters:
   target: rootfs.tar.gz
+  image: demo.img
 steps:
-  - step: bootstrap
+  - step: deploy
     options:
-      target: rootfs.tar.gz
-      suite: bookworm
