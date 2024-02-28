@@ -12,17 +12,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""
-test_ruck
-----------------------------------
 
-Tests for `ruck` module.
-"""
-
+from ruck.schema import validate
 from ruck.tests import base
 
 
-class TestRuck(base.TestCase):
+class TestSchemaValidate(base.TestCase):
 
-    def test_something(self):
-        pass
+    def test_valid_scemea(self):
+        SCHEMA = {"description": {"type": "string"}}
+        step = {"description": "test"}
+        status = validate(step, SCHEMA)
+        self.assertEqual(status, 1)

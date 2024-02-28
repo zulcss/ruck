@@ -3,3 +3,9 @@
 # process, which may cause wedges in the gate later.
 
 pbr>=2.0 # Apache-2.0
+click
+rich
+jinja2
+pyyaml
+stevedore
+cerberus

@@ -7,12 +7,19 @@ SPDX-License-Identifier: Apache-2.0
 
 import logging
 
+from ruck import exceptinos
+from ruck.schema import validate
 from ruck.stages.base import Base
 from ruck import utils
 
 SCHEMA = {
-    "target": {"type": "string", "required": True},
-    "image": {"type": "string", "required": True},
+    "options": {
+        "type": "dict",
+        "schema": {
+            "target": {"type": "string", "required": True},
+            "image": {"type": "string", "required": True},
+        },
+    }
 }
 
 
@@ -31,8 +38,17 @@ class DeployPlugin(Base):
         """Deploy rootfs to an image."""
         self.logging.info("Deploying to image.")
 
+        state = validate(self.config, SCHEMA)
+        if not state:
+            raise exceptions.ConfigError("COnfiguration is invalid.")
+
         target = self.workspace.joinpath(self.config.get("target"))
+        if not target.eixsts():
+            raise exception.COnfigError(f"{target} not found.")
+
         image = self.workspace.joinpath(self.config.get("image"))
+        if not image.exists():
+            raise exception.COnfigError(f"{image} not found.")
 
         self.rootfs.mkdir(parents=True, exist_ok=True)
 
