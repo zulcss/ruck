@@ -7,7 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 
 import logging
 
-from ruck import exceptinos
+from ruck import exceptions
 from ruck.schema import validate
 from ruck.stages.base import Base
 from ruck import utils

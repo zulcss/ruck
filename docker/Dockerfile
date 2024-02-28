@@ -1,11 +1,17 @@
 FROM debian:testing
 
 RUN apt-get update && \
-    apt-get install -y mmdebstrap \
-		       systemd \
-		       python3-pip \
-		       python3-yaml \
-		       git
+    apt-get install -y \
+        mmdebstrap \
+		systemd \
+        systemd-boot \
+        python3-pip \
+        python3-yaml \
+        python3-rich \
+        python3-stevedore \
+        python3-cerberus \
+        python3-systemd \
+        git
 
 COPY files/pip.conf /etc/pip.conf
 
