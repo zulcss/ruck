@@ -25,6 +25,7 @@ def run_chroot(args, rootfs, **kwargs):
         "--dir", "/run",
         "--bind", "/tmp", "/tmp",
         "--bind", f"{rootfs}/boot", "/boot",
+        "--bind", f"{rootfs}/efi", "/efi",
         "--bind", f"{rootfs}/usr", "/usr",
         "--bind", f"{rootfs}/etc", "/etc",
         "--bind", f"{rootfs}/var", "/var",

@@ -11,6 +11,8 @@ RUN apt-get update && \
         python3-stevedore \
         python3-cerberus \
         python3-systemd \
+        dosfstools \
+        systemd-container \
         git
 
 COPY files/pip.conf /etc/pip.conf

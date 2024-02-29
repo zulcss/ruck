@@ -1,5 +1,6 @@
 #!/bin/bash
 
-podman run --privileged \
+sudo podman run \
+    --privileged \
     -v $(pwd):/work \
     -i -t ruck \
