@@ -16,27 +16,17 @@ def run_command(argv, **kwargs):
         raise e
 
 
-def run_chroot(args, rootfs, **kwargs):
+def run_chroot(args, image, **kwargs):
     """Run a command in a seperate namespace."""
     cmd = [
-        "bwrap",
-        "--proc", "/proc",
-        "--dev", "/dev",
-        "--dir", "/run",
-        "--bind", "/tmp", "/tmp",
-        "--bind", f"{rootfs}/boot", "/boot",
-        "--bind", f"{rootfs}/efi", "/efi",
-        "--bind", f"{rootfs}/usr", "/usr",
-        "--bind", f"{rootfs}/etc", "/etc",
-        "--bind", f"{rootfs}/var", "/var",
-        "--symlink", "/usr/lib", "/lib",
-        "--symlink", "/usr/lib64", "/lib64",
-        "--symlink", "/usr/bin", "/bin",
-        "--symlink", "/usr/sbin", "/sbin",
-        "--share-net",
-        "--die-with-parent",
-        "--chdir", "/",
+        "systemd-nspawn",
+        "--quiet",
+        "--as-pid2",
+        "-i",
+        image
     ]
     cmd += args
+
+    print(cmd)
 
     return run_command(cmd, **kwargs)
