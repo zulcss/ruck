@@ -7,12 +7,12 @@ SPDX-License-Identifier: Apache-2.0
 
 import logging
 
+from ruck.archive import unpack
 from ruck import exceptions
 from ruck.mount import mount
 from ruck.mount import umount
 from ruck.schema import validate
 from ruck.stages.base import Base
-from ruck import utils
 
 SCHEMA = {
     "image": {"type": "string"},
@@ -60,13 +60,7 @@ class DeployPlugin(Base):
         mount(image, self.rootfs)
 
         # Unpack the tarball.
-        self._unpack(target)
+        unpack(target, self.rootfs)
 
         self.logging.info(f"Umounting {self.rootfs}.")
         umount(self.rootfs)
-
-    def _unpack(self, target):
-        self.logging.info(f"Unpacking {target}")
-        utils.run_command(
-            ["tar", "-C", self.rootfs, "-zxf", target, "--numeric-owner"]
-        )
