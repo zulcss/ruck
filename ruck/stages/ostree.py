@@ -4,16 +4,13 @@ Copyright (c) 2024 Wind River Systems, Inc.
 SPDX-License-Identifier: Apache-2.0
 
 """
-import hashlib
 import logging
-import shutil
-import sys
 import os
 import pathlib
+import shutil
 
-from ruck import exceptions
-from ruck.ostree import Ostree
 from ruck.archive import unpack
+from ruck.ostree import Ostree
 from ruck.stages.base import Base
 from ruck import utils
 
@@ -39,7 +36,8 @@ class OstreeInitPlugin(OstreeBase):
 
         if not repo.exists():
             utils.run_command(
-                ["ostree", "init", "--repo", repo])
+                ["ostree", "init", "--repo", repo, "--mode", mode])
+
 
 class OstreePrepPlugin(OstreeBase):
     def run(self):
@@ -48,7 +46,7 @@ class OstreePrepPlugin(OstreeBase):
         repo = pathlib.Path(self.options.get("repo"))
         branch = self.options.get("branch")
         target = self.workspace.joinpath(self.options.get("target"))
-        
+
         self.rootfs = self.workspace.joinpath("rootfs")
         if self.rootfs.exists():
             shutil.rmtree(self.rootfs)
@@ -80,9 +78,8 @@ class OstreePrepPlugin(OstreeBase):
             self.rootfs.joinpath(f"boot/initrd.img-{kver}"),
             self.rootfs.joinpath(f"usr/lib/modules/{kver}/initrd.img"))
 
-        r = self.ostree.ostree_commit(
-                self.rootfs,
-                branch=branch,
-                repo=repo,
-                subject="Initial commit")
-
+        self.ostree.ostree_commit(
+            self.rootfs,
+            branch=branch,
+            repo=repo,
+            subject="Initial commit")

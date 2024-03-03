@@ -21,7 +21,7 @@ SCHEMA = {
             "definition": {"type": "string", "required": True},
             "size": {"type": "string", "required": True},
             "image": {"type": "string", "required": True},
-         }
+            }
         },
     }
 
