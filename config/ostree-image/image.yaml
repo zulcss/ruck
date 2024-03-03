@@ -16,3 +16,8 @@ steps:
     options:
       repo: /var/wwww/html/repo
       mode: bare
+  - step: ostree_legacy
+    options:
+      repo: /var/www/html/repo
+      branch: exampleos/testing
+      target: rootfs.tar.gz
