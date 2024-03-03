@@ -6,7 +6,13 @@ How to run this demo.
 
 2. Install ruck:
 
-    sudo pip install -e https://github.com/zulcss/ruck
+    sudo pip install -e https://github.com/zulcss/ruck#egg=ruck
+
+3. Run the following commands:
+
+   sudo ruck build --config treefile.yaml
+   sudo ruck build --config disk.yaml
+   sudo ruck build --config deploy.yaml
 
 3. Run systemd-nspawn
 

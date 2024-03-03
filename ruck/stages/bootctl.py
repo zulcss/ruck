@@ -15,10 +15,11 @@ from ruck.stages.base import Base
 from ruck import utils
 
 SCHEMA = {
-    "image": {"type": "string"},
+    "step": {"type": "string"},
     "options": {
         "type": "dict",
         "schema": {
+                "image": {"type": "string"},
                 "kernel_cmdline": {"type": "string"},
             },
         },
@@ -44,7 +45,7 @@ class SDBootPlugin(Base):
         if not state:
             raise exceptions.ConfigError("Configuration is invalid.")
 
-        self.image = self.workspace.joinpath(self.config.get("image"))
+        self.image = self.workspace.joinpath(self.options.get("image"))
         if not self.image.exists():
             raise exceptions.ConfigError("f{self.image} is not found.")
 

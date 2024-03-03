@@ -14,7 +14,7 @@ from ruck.stages.base import Base
 from ruck import utils
 
 SCHEMA = {
-    "target": {"type": "string"},
+    "step": {"type": "string", "required": True},
     "options": {
         "type": "dict",
         "schema": {
@@ -55,7 +55,7 @@ class BootstrapPlugin(Base):
             raise exceptions.ConfigError("Invalid schema.")
 
         suite = self.options.get("suite")
-        target = self.config.get("target")
+        target = self.options.get("target")
 
         cmd = [
             self.mmdebstrap,
@@ -77,8 +77,6 @@ class BootstrapPlugin(Base):
         components = self.options.get("components", None)
         if components:
             cmd.extend([f"--components={','.join(components)}"])
-        cmd.extend([suite, target])
-        utils.run_command(cmd, cwd=self.workspace)
 
         # Enable variants.
         variant = self.options.get("variant", None)

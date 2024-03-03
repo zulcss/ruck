@@ -14,3 +14,4 @@
 - policykit-1
 - curl
 - wget
+- ca-certificates

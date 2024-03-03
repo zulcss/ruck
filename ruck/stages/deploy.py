@@ -15,8 +15,7 @@ from ruck.schema import validate
 from ruck.stages.base import Base
 
 SCHEMA = {
-    "image": {"type": "string"},
-    "target": {"type": "string"},
+    "step": {"type": "string"},
     "options": {
         "type": "dict",
         "schema": {
@@ -44,13 +43,13 @@ class DeployPlugin(Base):
 
         state = validate(self.config, SCHEMA)
         if not state:
-            raise exceptions.ConfigError("COnfiguration is invalid.")
+            raise exceptions.ConfigError("Configuration is invalid.")
 
-        target = self.workspace.joinpath(self.config.get("target"))
+        target = self.workspace.joinpath(self.options.get("source"))
         if not target.exists():
             raise exceptions.COnfigError(f"{target} not found.")
 
-        image = self.workspace.joinpath(self.config.get("image"))
+        image = self.workspace.joinpath(self.options.get("target"))
         if not image.exists():
             raise exceptions.COnfigError(f"{image} not found.")
 

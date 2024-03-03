@@ -1,0 +1,30 @@
+---
+name: ExampleOS
+parameters:
+  image: demo.img
+  target: rootfs.tar.gz
+steps:
+  - step: bootstrap
+    options:
+      suite: bookworm
+      target: rootfs.tar.gz
+      setup-hooks:
+        - 'sync-in overlay/debian/ /'
+      customize-hooks:
+        - echo 'root:root' | chroot "$1" chpasswd
+        - systemctl enable --root="$1" systemd-networkd
+        - chroot $1 echo "localhost" > $1/etc/hostnam
+      packages: !include manifests/software.yaml
+  - step: disk
+    options:
+      image: demo.img
+      definition: partitions
+      size: 10G
+  - step: deploy
+    options:
+      source: rootfs.tar.gz
+      target: demo.img
+  - step: bootctl
+    options:
+      image: demo.img
+      kernel_cmdline: "root=LABEL=ROOT console=tty0 console=ttyS0,115200"

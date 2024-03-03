@@ -1,8 +1,10 @@
 ---
-name: ExampleOs
+name: ruck-demo
 parameters:
   target: rootfs.tar.gz
   image: demo.img
 steps:
   - step: deploy
     options:
+      source: rootfs.tar.gz
+      target: demo.img

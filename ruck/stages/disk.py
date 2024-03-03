@@ -14,13 +14,14 @@ from ruck.stages.base import Base
 from ruck.utils import run_command
 
 SCHEMA = {
-    "image": {"type": "string", "required": True},
+    "step": {"type": "string", "required": True},
     "options": {
         "type": "dict",
         "schema": {
             "definition": {"type": "string", "required": True},
             "size": {"type": "string", "required": True},
-        }
+            "image": {"type": "string", "required": True},
+         }
         },
     }
 
@@ -47,7 +48,7 @@ class DiskPlugin(Base):
         if not state:
             raise exceptions.ConfigError("Configuration is invalid.")
 
-        image = self.workspace.joinpath(self.config.get("image"))
+        image = self.workspace.joinpath(self.options.get("image"))
         if image.exists():
             # systemd-repart errors out if image already exists.
             self.logging.info(f"Removing {image}.")

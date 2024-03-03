@@ -1,0 +1,8 @@
+---
+name: ruck-demo
+parameters:
+  image: demo.img
+steps:
+  - step: bootctl
+    options:
+      kernel_cmdline: "root=LABEL=ROOT console=tty0 console=ttyS0,115200"

@@ -1,9 +1,9 @@
 ---
-name: ExampleOs
+name: ruck-demo
 parameters:
   image: demo.img
 steps:
   - step: disk
     options:
       definition: partitions
-      size: 1G
+      size: 10G

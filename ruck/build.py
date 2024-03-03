@@ -40,16 +40,14 @@ class Build(object):
             self.workspace,
             dirs_exist_ok=True)
 
-        options = config.get("parameters", {})
         steps = config.get("steps")
         for step in steps:
-            options["options"] = step.get("options")
             mgr = driver.DriverManager(
                 namespace="ruck.stages",
                 name=step.get("step"),
                 invoke_on_load=True,
                 invoke_args=(self.state,
-                             options,
+                             step,
                              self.workspace),
                 )
             mgr.driver.run()
