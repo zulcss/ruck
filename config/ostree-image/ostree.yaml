@@ -1,12 +1,18 @@
 ---
 name: ExampleOS
 steps:
-  - step: ostree_init
-    options:
-      repo: /var/wwww/html/repo
-      mode: bare
   - step: ostree_prep
     options:
       repo: /var/www/html/repo
       branch: exampleos/testing
       target: rootfs.tar.gz
+  - step: disk
+    options:
+      image: demo.img
+      definition: partitions
+      size: 10G
+  - step: ostree_deploy
+    options:
+      repo: /var/www/html/repo
+      branch: exampleos/testing
+      image: demo.img

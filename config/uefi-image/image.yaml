@@ -1,7 +1,7 @@
 ---
-name: ExampleOS
+name: pablo
 parameters:
-  image: demo.img
+  image: pablo.img
   target: rootfs.tar.gz
 steps:
   - step: bootstrap

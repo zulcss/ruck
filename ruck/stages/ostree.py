@@ -10,6 +10,8 @@ import pathlib
 import shutil
 
 from ruck.archive import unpack
+from ruck.mount import mount
+from ruck.mount import umount
 from ruck.ostree import Ostree
 from ruck.stages.base import Base
 from ruck import utils
@@ -36,7 +38,7 @@ class OstreeInitPlugin(OstreeBase):
 
         if not repo.exists():
             utils.run_command(
-                ["ostree", "init", "--repo", repo, "--mode", mode])
+                ["ostree", "init", "--repo", repo])
 
 
 class OstreePrepPlugin(OstreeBase):
@@ -77,9 +79,48 @@ class OstreePrepPlugin(OstreeBase):
         shutil.copy(
             self.rootfs.joinpath(f"boot/initrd.img-{kver}"),
             self.rootfs.joinpath(f"usr/lib/modules/{kver}/initrd.img"))
-
+        
+        self.logging.info("Commiting to ostree")
         self.ostree.ostree_commit(
             self.rootfs,
             branch=branch,
             repo=repo,
             subject="Initial commit")
+
+class OstreeDeployPlugin(OstreeBase):
+    def run(self):
+        self.logging.info("Deploying ostree branch.")
+
+        repo = pathlib.Path(self.options.get("repo"))
+        branch = self.options.get("branch")
+        image = self.workspace.joinpath(self.options.get("image"))
+
+        self.logging.info(f"Mounting {image}.")
+        self.rootfs = self.workspace.joinpath("rootfs")
+        if self.rootfs.exists():
+            shutil.rmtree(self.rootfs)
+
+        mount(image, self.rootfs) 
+
+        sysroot = self.rootfs.joinpath("sysroot")
+        ostree_repo = self.rootfs.joinpath("sysroot/ostree/repo")
+        ostree_repo.mkdir(parents=True, exist_ok=True)
+        utils.run_command(
+            ["ostree", "init", "--repo", ostree_repo, "--mode=bare"]
+        )
+        utils.run_command(
+            ["ostree", "config", "--repo", ostree_repo, "--group", "sysroot",
+             "set", "bootloder", "none"])
+        utils.run_command(
+            ["ostree", "pull-local", "--repo", ostree_repo, repo, branch])
+
+        utils.run_command(
+            ["ostree", "admin", "init-fs", sysroot])
+        utils.run_command(
+            ["ostree", "admin", "os-init", "--sysroot", sysroot, "debian"])
+        utils.run_command(
+            ["ostree", "admin", "deploy", "--os", "debian",
+             "--sysroot", sysroot, branch,
+             '--karg="rw"', '--karg="console=ttyS0"'])
+        umount(self.rootfs)
+
