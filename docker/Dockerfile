@@ -3,6 +3,7 @@ FROM debian:testing
 RUN apt-get update && \
     apt-get install -y \
         mmdebstrap \
+        dosfstools \
 		systemd \
         systemd-boot \
         python3-pip \
