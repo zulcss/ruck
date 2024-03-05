@@ -1,3 +1,0 @@
-# <file system>    <dir>        <type>    <options>                                <makeimg args>
-LABEL=EFI          /boot/efi         vfat      umask=077 0 1
-LABEL=ROOT         /            ext4      defaults 0 0

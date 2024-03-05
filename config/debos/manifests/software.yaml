@@ -1,6 +1,6 @@
 ---
 - systemd-boot
-- dracut-core
+- dracut
 - linux-image-amd64
 - ca-certificates
 - ostree
