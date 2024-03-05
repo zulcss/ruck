@@ -65,7 +65,6 @@ class DiskPlugin(Base):
             "--size", size,
             "--dry-run=no",
             "--discard=no",
-            "--offline=true",
             "--no-pager",
             str(image)],
             cwd=self.workspace)
