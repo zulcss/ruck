@@ -12,3 +12,11 @@ steps:
         - systemctl enable --root="$1" systemd-networkd
         - chroot $1 echo "localhost" > $1/etc/hostnam
       packages: !include manifests/software.yaml
+  - step: ostree_prep
+    options:
+      repo: /var/www/html/repo
+      branch: exampleos/testing
+      target: rootfs.tar.gz
+  - step: debos
+    options:
+      recipe: debos.yaml

@@ -1,0 +1,60 @@
+{{/* Copyright (c) 2023 Wind River Systems, Inc. */}}
+{{/* SPDX-License-Identifier: Apache-2.0 */}}
+{{- $architecture := or .architecture "amd64" -}}
+{{- $image := or .image (printf "debian-ostree-qemu-uefi-%s.img" $architecture) -}}
+{{- $cmdline := or .cmdline "console=tty0 console=ttyS0,115200n8 rootwait rw fsck.mode=auto fsck.repair=yes systemd.gpt_auto=false" -}}
+{{- $branch := or .branch "debian/bookworm" -}}
+{{- $repo := or .repo "ostree_repo" -}}
+{{- $size := or .size "20G" -}}
+
+architecture: {{ $architecture }}
+
+actions:
+  - action: image-partition
+    imagename: {{ $image }}
+    imagesize: {{ $size }}
+    partitiontype: gpt
+
+    mountpoints:
+      - mountpoint: /
+        partition: system
+      - mountpoint: /boot/efi
+        partition: EFI
+
+    partitions:
+      - name: EFI
+        fs: vfat
+        start: 0%
+        end: 256M
+        flags: [boot]
+      - name: system
+        fs: ext4
+        start: 266M
+        end: 100%
+
+  # Reset the rootfs to allow to deploy OSTree from a clean rootfs
+  - action: run
+    description: Reset rootfs before deploying OSTree
+    chroot: false
+    command: find ${ROOTDIR} -maxdepth 1 -mindepth 1 -exec rm -rf {} \;
+
+  - action: ostree-deploy
+    repository: ostree_repo
+    branch: {{ $branch }}
+    os: debian
+    append-kernel-cmdline: {{ $cmdline }}
+
+  - action: run
+    description: enable signature verification
+    chroot: false
+    command: ostree --repo="${ROOTDIR}/ostree/repo" config set 'remote "origin"'.sign-verify "true"
+
+  - action: run
+    description: enable update bundle verification
+    chroot: false
+    command: ostree --repo="${ROOTDIR}/ostree/repo" config set core.sign-verify-deltas "true"
+
+  - action: run
+    description: install bootloader
+    chroot: false
+    script: scripts/setup-uefi-bootloader.sh debian
