@@ -11,7 +11,7 @@ import sys
 
 from rich.console import Console
 
-from apt_ostree.utils import run_command
+from ruck.utils import run_command
 
 # pylint: disable=wrong-import-position
 import gi
