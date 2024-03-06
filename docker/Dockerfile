@@ -14,6 +14,7 @@ RUN apt-get update && \
         python3-systemd \
         dosfstools \
         systemd-container \
+        gir1.2-ostree-1.0 \
         git
 
 COPY files/pip.conf /etc/pip.conf
