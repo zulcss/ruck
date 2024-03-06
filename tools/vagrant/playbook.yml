@@ -1,0 +1,7 @@
+---
+- hosts: all
+  tasks:
+    - copy:
+        src: files/pip.conf
+        dest: /etc/pip.conf
+      become: yes
