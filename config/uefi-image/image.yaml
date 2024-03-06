@@ -15,7 +15,7 @@ steps:
         - systemctl enable --root="$1" systemd-networkd
         - chroot $1 echo "localhost" > $1/etc/hostnam
       packages: !include manifests/software.yaml
-  - step: disk
+  - step: repart
     options:
       image: demo.img
       definition: partitions

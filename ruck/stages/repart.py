@@ -26,7 +26,7 @@ SCHEMA = {
     }
 
 
-class DiskPlugin(Base):
+class RepartPlugin(Base):
     def __init__(self, state, config, workspace):
         self.state = state
         self.config = config
