@@ -13,6 +13,10 @@ steps:
         - chroot $1 echo "localhost" > $1/etc/hostname
         - mkdir -p $1/efi
       packages: !include manifests/software.yaml
+  - step: ostree_init
+    options:
+      repo: /var/www/htm/repo
+      mode: bare
   - step: ostree_prep
     options:
       repo: /var/www/html/repo
