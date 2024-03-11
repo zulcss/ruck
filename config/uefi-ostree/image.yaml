@@ -15,7 +15,7 @@ steps:
       packages: !include manifests/software.yaml
   - step: ostree_init
     options:
-      repo: /var/www/htm/repo
+      repo: /var/www/html/repo
       mode: bare
   - step: ostree_prep
     options:
@@ -38,7 +38,7 @@ steps:
           start: 256MB
           end: 100%
           type: "4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709"
-      filesystem:
+      filesystems:
         - name: EFI
           label: EFI
           fs: vfat
