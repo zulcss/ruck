@@ -27,6 +27,31 @@ def run_chroot(args, image, **kwargs):
     ]
     cmd += args
 
+    return run_command(cmd, **kwargs)
+
+
+def bwrap(args, rootfs, workspace=None, efi=False, **kwargs):
+    """Run bubblewarap in a seperate namespace."""
+    cmd = [
+        "bwrap",
+        "--bind", rootfs, "/",
+        "--proc", "/proc",
+        "--dev-bind", "/dev", "/dev",
+        "--bind", "/sys", "/sys",
+        "--dir", "/run",
+        "--bind", "/tmp", "/tmp",
+        "--share-net",
+        "--die-with-parent",
+        "--chdir", "/",
+    ]
+
+    if efi:
+        cmd += [
+            "--bind", f"{workspace}/efi", "/efi",
+            "--bind", "/sys/firmware/efi/efivars", "/sys/firmware/efi/efivars",
+        ]
+
     print(cmd)
+    cmd += args
 
     return run_command(cmd, **kwargs)

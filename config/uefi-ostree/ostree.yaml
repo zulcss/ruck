@@ -1,0 +1,8 @@
+---
+name: ExampleOS-ostree
+steps:
+  - step: ostree_prep
+    options:
+      repo: /var/www/html/repo
+      branch: exampleos/testing
+      target: rootfs.tar.gz
