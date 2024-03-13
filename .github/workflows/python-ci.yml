@@ -33,8 +33,9 @@ jobs:
           virtualenv venv
           source venv/bin/activate
           pip install -r ci-requirements.txt
-          isort . --check-only || true
-          black --check . || true
+          pip install -r requirements.txt
+          isort . --check-only
+          black --check .
           find ruck -type f -name "*.py" | xargs pylint || true
 
   python_build:
