@@ -1,10 +1,12 @@
 FROM debian:testing
 
+# Don't pin the packages versions to exact values
+# hadolint ignore=DL3008
 RUN apt-get update && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
         mmdebstrap \
         dosfstools \
-		systemd \
+        systemd \
         systemd-boot \
         python3-pip \
         python3-yaml \
@@ -21,7 +23,8 @@ RUN apt-get update && \
         rsync \
         dosfstools \
         gir1.2-ostree-1.0 \
-        git
+        git && \
+        rm -rf /var/lib/apt/lists/*
 
 COPY files/pip.conf /etc/pip.conf
 
