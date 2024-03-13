@@ -1,0 +1,4 @@
+tox>=4.14.0 # MIT
+pylint>=3.1.0 # GPLv2
+isort>=5.13.2 # MIT
+black>=24.2.0 # MIT
