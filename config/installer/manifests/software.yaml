@@ -1,0 +1,17 @@
+---
+- systemd-boot
+- dracut-core
+- linux-image-amd64
+- ca-certificates
+- vim
+- sudo
+- net-tools
+- openssh-client
+- openssh-server
+- procps
+- less
+- dbus
+- policykit-1
+- curl
+- wget
+- ca-certificates
