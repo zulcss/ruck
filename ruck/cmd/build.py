@@ -11,8 +11,7 @@ from ruck.cmd import pass_state_context
 from ruck.cmd.options import config_option
 
 
-@click.command(
-    help="Build Debian artifact from manifest.")
+@click.command(help="Build Debian artifact from manifest.")
 @pass_state_context
 @config_option
 def build(state, config):

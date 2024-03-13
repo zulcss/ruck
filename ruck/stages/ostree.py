@@ -4,6 +4,7 @@ Copyright (c) 2024 Wind River Systems, Inc.
 SPDX-License-Identifier: Apache-2.0
 
 """
+
 import hashlib
 import logging
 import os
@@ -37,8 +38,7 @@ class OstreeInitPlugin(OstreeBase):
         mode = self.options.get("mode")
 
         if not repo.exists():
-            utils.run_command(
-                ["ostree", "init", "--repo", repo])
+            utils.run_command(["ostree", "init", "--repo", repo])
 
 
 class OstreeDeployPlugin(OstreeBase):
@@ -62,26 +62,38 @@ class OstreeDeployPlugin(OstreeBase):
         ostree_repo = rootfs.joinpath("ostree/repo")
         self.logging.info(f"Creating {ostree_repo}.")
         ostree_repo.mkdir(parents=True, exist_ok=True)
-        utils.run_command(
-            ["ostree", "init", "--repo", ostree_repo, "--mode", "bare"])
+        utils.run_command(["ostree", "init", "--repo", ostree_repo, "--mode", "bare"])
         self.logging.info(f"Pulling {branch}")
+        utils.run_command(["ostree", "pull-local", "--repo", ostree_repo, repo, branch])
         utils.run_command(
-            ["ostree", "pull-local", "--repo", ostree_repo, repo, branch])
-        utils.run_command(
-            ["ostree", "config", "--repo", ostree_repo, "--group", "sysroot",
-             "set", "bootloader", "none"])
+            [
+                "ostree",
+                "config",
+                "--repo",
+                ostree_repo,
+                "--group",
+                "sysroot",
+                "set",
+                "bootloader",
+                "none",
+            ]
+        )
 
         self.logging.info(f"Configuring {image} for ostree.")
-        utils.run_command(
-            ["ostree", "admin", "init-fs", rootfs])
-        utils.run_command(
-            ["ostree", "admin", "os-init", "--sysroot", rootfs, "debian"])
+        utils.run_command(["ostree", "admin", "init-fs", rootfs])
+        utils.run_command(["ostree", "admin", "os-init", "--sysroot", rootfs, "debian"])
 
         self.logging.info(f"Deploying {branch}")
         ostree_deploy = [
-            "ostree", "admin", "deploy",
-            "--sysroot", rootfs,
-            "--os", "debian", branch]
+            "ostree",
+            "admin",
+            "deploy",
+            "--sysroot",
+            rootfs,
+            "--os",
+            "debian",
+            branch,
+        ]
         for arg in kernel_args:
             ostree_deploy.append(f"--karg={arg}")
         utils.run_command(ostree_deploy)
@@ -89,13 +101,12 @@ class OstreeDeployPlugin(OstreeBase):
         self.logging.info("Setting up bootloader.")
         for d in rootfs.glob("ostree/deploy/debian/deploy/*.0"):
             repo_root = d
-        utils.bwrap(["bootctl", "install"], repo_root,
-                    workspace=rootfs, efi=True)
-        shutil.copytree(rootfs.joinpath("boot/ostree"),
-                        rootfs.joinpath("efi/ostree"))
+        utils.bwrap(["bootctl", "install"], repo_root, workspace=rootfs, efi=True)
+        shutil.copytree(rootfs.joinpath("boot/ostree"), rootfs.joinpath("efi/ostree"))
         shutil.copy2(
             rootfs.joinpath("boot/loader/entries/ostree-1-debian.conf"),
-            rootfs.joinpath("efi/loader/entries/ostree-0-1.conf"))
+            rootfs.joinpath("efi/loader/entries/ostree-0-1.conf"),
+        )
 
         umount(rootfs)
 
@@ -117,20 +128,24 @@ class OstreePrepPlugin(OstreeBase):
         self.create_ostree()
 
     def create_ostree(self):
-        self.setup_boot(self.rootfs.joinpath("boot"),
-                        self.rootfs.joinpath("usr/lib/ostree-boot"))
+        self.setup_boot(
+            self.rootfs.joinpath("boot"), self.rootfs.joinpath("usr/lib/ostree-boot")
+        )
         self.convert_to_ostree()
         self.logging.info("Commiting to ostree")
         self.ostree.ostree_commit(
-            self.rootfs,
-            branch=self.branch,
-            repo=self.repo,
-            subject="Initial commit")
+            self.rootfs, branch=self.branch, repo=self.repo, subject="Initial commit"
+        )
 
     def convert_to_ostree(self):
-        CRUFT = ["boot/initrd.img", "boot/vmlinuz",
-                 "initrd.img", "initrd.img.old",
-                 "vmlinuz", "vmlinuz.old"]
+        CRUFT = [
+            "boot/initrd.img",
+            "boot/vmlinuz",
+            "initrd.img",
+            "initrd.img.old",
+            "vmlinuz",
+            "vmlinuz.old",
+        ]
         assert self.rootfs is not None and self.rootfs != ""
 
         # Remove unecessary files
@@ -203,11 +218,15 @@ class OstreePrepPlugin(OstreeBase):
 
         csum = m.hexdigest()
 
-        os.rename(os.path.join(bootdir, vmlinuz),
-                  os.path.join(targetdir, vmlinuz + "-" + csum))
+        os.rename(
+            os.path.join(bootdir, vmlinuz),
+            os.path.join(targetdir, vmlinuz + "-" + csum),
+        )
 
         if initrd is not None:
-            os.rename(os.path.join(bootdir, initrd),
-                      os.path.join(targetdir,
-                                   initrd.replace(
-                                       "initrd.img", "initramfs") + "-" + csum))
+            os.rename(
+                os.path.join(bootdir, initrd),
+                os.path.join(
+                    targetdir, initrd.replace("initrd.img", "initramfs") + "-" + csum
+                ),
+            )

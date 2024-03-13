@@ -17,10 +17,10 @@ SCHEMA = {
     "options": {
         "type": "dict",
         "schema": {
-                "image": {"type": "string"},
-                "kernel_cmdline": {"type": "string"},
-            },
+            "image": {"type": "string"},
+            "kernel_cmdline": {"type": "string"},
         },
+    },
 }
 
 
@@ -52,10 +52,9 @@ class SDBootPlugin(Base):
 
         self.logging.info("Installing bootloader")
         utils.run_chroot(
-            ["bootctl", "install",
-             "--no-variables",
-             "--entry-token", "os-id"],
-            self.image)
+            ["bootctl", "install", "--no-variables", "--entry-token", "os-id"],
+            self.image,
+        )
 
         mount(self.image, self.rootfs)
 
@@ -65,8 +64,8 @@ class SDBootPlugin(Base):
 
         self.logging.info(f"Installing kernel {kver}.")
         utils.run_chroot(
-            ["kernel-install", "add", kver, f"/boot/vmlinuz-{kver}"],
-            self.image)
+            ["kernel-install", "add", kver, f"/boot/vmlinuz-{kver}"], self.image
+        )
 
     def install_kernel(self):
         """Configure kernel cmdine."""

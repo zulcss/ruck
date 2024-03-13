@@ -4,6 +4,7 @@ Copyright (c) 2024 Wind River Systems, Inc.
 SPDX-License-Identifier: Apache-2.0
 
 """
+
 import logging
 import os
 import shutil
@@ -21,9 +22,9 @@ SCHEMA = {
             "definition": {"type": "string", "required": True},
             "size": {"type": "string", "required": True},
             "image": {"type": "string", "required": True},
-            }
         },
-    }
+    },
+}
 
 
 class RepartPlugin(Base):
@@ -41,8 +42,7 @@ class RepartPlugin(Base):
         """Create a DDI based disk image using systemd-repart."""
         self.logging.info("Creating DDI disk.")
         if self.repart is None:
-            raise exceptions.CommandNotFoundError(
-                "systemd-repart is not found.")
+            raise exceptions.CommandNotFoundError("systemd-repart is not found.")
 
         state = validate(self.config, SCHEMA)
         if not state:
@@ -58,13 +58,18 @@ class RepartPlugin(Base):
             raise exceptions.ConfigError(f"Unable to find {definitions}.")
         size = self.options.get("size")
 
-        run_command([
-            self.repart,
-            "--definitions", str(definitions),
-            "--empty=create",
-            "--size", size,
-            "--dry-run=no",
-            "--discard=no",
-            "--no-pager",
-            str(image)],
-            cwd=self.workspace)
+        run_command(
+            [
+                self.repart,
+                "--definitions",
+                str(definitions),
+                "--empty=create",
+                "--size",
+                size,
+                "--dry-run=no",
+                "--discard=no",
+                "--no-pager",
+                str(image),
+            ],
+            cwd=self.workspace,
+        )

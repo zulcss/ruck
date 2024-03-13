@@ -18,19 +18,16 @@ def setup_log(debug=False):
     rootLogger = logging.getLogger()
     rootLogger.setLevel(logging.NOTSET)
 
-    journald_handler = JournalHandler(
-        SYSLOG_IDENTIFIER="apt-ostree")
+    journald_handler = JournalHandler(SYSLOG_IDENTIFIER="apt-ostree")
     journald_handler.setLevel(level)
-    journald_handler.setFormatter(logging.Formatter(
-        '[%(levelname)s] %(message)s'))
+    journald_handler.setFormatter(logging.Formatter("[%(levelname)s] %(message)s"))
     rootLogger.addHandler(journald_handler)
 
     console = Console(color_system=None)
 
-    rich_handler = RichHandler(show_path=False,
-                               show_time=False,
-                               show_level=False,
-                               console=console)
+    rich_handler = RichHandler(
+        show_path=False, show_time=False, show_level=False, console=console
+    )
     rich_handler.setLevel(level)
     rich_handler.setFormatter(logging.Formatter(fmt))
     rootLogger.addHandler(rich_handler)

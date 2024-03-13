@@ -50,15 +50,23 @@ class ImagePlugin(Base):
             # TODO(chuck): add msdos support
             if label not in ["gpt"]:
                 self.logging.error(f"{label} is not a valid type.")
-            utils.run_command(
-                ["parted", self.image, "--script", "mklabel", label])
+            utils.run_command(["parted", self.image, "--script", "mklabel", label])
 
     def create_partitions(self):
         """Use parted to create the partitions."""
         for index, part in enumerate(self.partitions, start=1):
             utils.run_command(
-                ["parted", "-s", self.image, "--", "mkpart", part.get("name"),
-                 part.get("start"), part.get("end")])
+                [
+                    "parted",
+                    "-s",
+                    self.image,
+                    "--",
+                    "mkpart",
+                    part.get("name"),
+                    part.get("start"),
+                    part.get("end"),
+                ]
+            )
             flags = part.get("flags")
             if flags:
                 for flag in flags:
@@ -76,16 +84,12 @@ class ImagePlugin(Base):
             self.logging.info(f"Creating device map for {self.image}")
             loop = self.losetup()
 
-            subprocess.run(
-                ["kpartx", "-a", loop], check=True)
+            subprocess.run(["kpartx", "-a", loop], check=True)
 
             for index, part in enumerate(self.filesystems, start=1):
                 fs = f"/dev/mapper/{os.path.basename(loop)}p{index}"
                 if os.path.exists(fs):
-                    self.mkfs(fs,
-                              part.get("fs"),
-                              part.get("label"),
-                              part.get("name"))
+                    self.mkfs(fs, part.get("fs"), part.get("label"), part.get("name"))
 
         finally:
             subprocess.run(["losetup", "-d", loop], check=True)
@@ -97,17 +101,13 @@ class ImagePlugin(Base):
 
         if fs_type == "vfat":
             # vfat is a special case
-            subprocess.run(
-                ["mkfs.vfat", "-F", "32", "-n", label, fs],
-                check=True)
+            subprocess.run(["mkfs.vfat", "-F", "32", "-n", label, fs], check=True)
         else:
-            subprocess.run(
-                ["mkfs", "-t", fs_type, "-L", label, fs], check=True)
+            subprocess.run(["mkfs", "-t", fs_type, "-L", label, fs], check=True)
 
     def losetup(self):
         """Find an empty loopt back device."""
         cmd = f"losetup --find --show {self.image}"
-        return subprocess.run(shlex.split(cmd),
-                              encoding="utf8",
-                              check=True,
-                              stdout=subprocess.PIPE).stdout.strip()
+        return subprocess.run(
+            shlex.split(cmd), encoding="utf8", check=True, stdout=subprocess.PIPE
+        ).stdout.strip()
