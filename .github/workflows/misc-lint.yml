@@ -1,0 +1,46 @@
+---
+name: Lint
+
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  yaml_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: YAML Lint
+        uses: docker://cytopia/yamllint
+        with:
+          entrypoint: /bin/ash
+          args: -c "yamllint -f colored $(find . -name '*.yml')"
+
+  rst_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: RST Lint
+        uses: docker://python:latest
+        with:
+          entrypoint: /bin/bash
+          args: -c "pip install restructuredtext-lint && rst-lint --level info *.rst"
+
+  shell_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Shell Lint
+        run: |
+          sudo apt-get update && sudo apt-get install -y shellcheck
+          find . -name "*.sh" | xargs -n 1 shellcheck --color=always || true
