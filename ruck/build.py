@@ -3,13 +3,14 @@ Copyright (c) 2024 Wind River Systems, Inc.
 
 SPDX-License-Identifier: Apache-2.0
 """
+
 import logging
 import shutil
 
 from stevedore import driver
 
-from ruck.config import Config
 from ruck import exceptions
+from ruck.config import Config
 
 
 class Build(object):
@@ -24,8 +25,7 @@ class Build(object):
 
         self.logging.info("Loading configuration file.")
         if not self.state.config.exists():
-            exceptions.ConfigError(
-                f"Failed to load configuration: {self.state.config}")
+            exceptions.ConfigError(f"Failed to load configuration: {self.state.config}")
         config = self.config.load_config()
 
         self.logging.info("Setting up workspace.")
@@ -35,10 +35,7 @@ class Build(object):
         self.workspace = self.state.workspace.joinpath(name)
 
         self.logging.info("Copying configuration to workspace.")
-        shutil.copytree(
-            self.state.config.parent,
-            self.workspace,
-            dirs_exist_ok=True)
+        shutil.copytree(self.state.config.parent, self.workspace, dirs_exist_ok=True)
 
         steps = config.get("steps")
         for step in steps:
@@ -46,8 +43,6 @@ class Build(object):
                 namespace="ruck.stages",
                 name=step.get("step"),
                 invoke_on_load=True,
-                invoke_args=(self.state,
-                             step,
-                             self.workspace),
-                )
+                invoke_args=(self.state, step, self.workspace),
+            )
             mgr.driver.run()

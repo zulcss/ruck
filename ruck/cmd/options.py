@@ -3,6 +3,7 @@ Copyright (c) 2024 Wind River Systems, Inc.
 
 SPDX-License-Identifier: Apache-2.0
 """
+
 import pathlib
 
 import click
@@ -16,11 +17,9 @@ def config_option(f):
         state.config = pathlib.Path(value)
 
         return value
+
     return click.option(
-        "-C", "--config",
-        help="Path to configuration file.",
-        nargs=1,
-        callback=callback
+        "-C", "--config", help="Path to configuration file.", nargs=1, callback=callback
     )(f)
 
 
@@ -29,11 +28,12 @@ def workspace_option(f):
         state = ctxt.ensure_object(State)
         state.workspace = pathlib.Path(value)
         return value
+
     return click.option(
         "--workspace",
         help="Path to the ruck workspace.",
         nargs=1,
         default="/var/tmp/ruck",
         required=True,
-        callback=callback
+        callback=callback,
     )(f)

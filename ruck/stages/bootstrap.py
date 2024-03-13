@@ -8,28 +8,27 @@ SPDX-License-Identifier: Apache-2.0
 import logging
 import shutil
 
-from ruck import exceptions
+from ruck import exceptions, utils
 from ruck.schema import validate
 from ruck.stages.base import Base
-from ruck import utils
 
 SCHEMA = {
     "step": {"type": "string", "required": True},
     "options": {
         "type": "dict",
         "schema": {
-                "target": {"type": "string", "required": True},
-                "suite": {"type": "string", "required": True},
-                "packages": {"type": "list"},
-                "variant": {"type": "string"},
-                "components": {"type": "list"},
-                "hooks": {"type": "list"},
-                "setup-hooks": {"type": "list"},
-                "extract-hooks": {"type": "list"},
-                "customize-hooks": {"type": "list"},
-                "essential-hooks": {"type": "list"},
-            },
-        }
+            "target": {"type": "string", "required": True},
+            "suite": {"type": "string", "required": True},
+            "packages": {"type": "list"},
+            "variant": {"type": "string"},
+            "components": {"type": "list"},
+            "hooks": {"type": "list"},
+            "setup-hooks": {"type": "list"},
+            "extract-hooks": {"type": "list"},
+            "customize-hooks": {"type": "list"},
+            "essential-hooks": {"type": "list"},
+        },
+    },
 }
 
 
@@ -59,7 +58,8 @@ class BootstrapPlugin(Base):
 
         cmd = [
             self.mmdebstrap,
-            "--architecture", "amd64",
+            "--architecture",
+            "amd64",
             "--verbose",
         ]
 
@@ -70,8 +70,7 @@ class BootstrapPlugin(Base):
 
         customize_hooks = self.options.get("customize-hooks", None)
         if customize_hooks:
-            cmd.extend([f"--customize-hook={hook}"
-                        for hook in customize_hooks])
+            cmd.extend([f"--customize-hook={hook}" for hook in customize_hooks])
 
         # Enable extra components (main, non-free, etc).
         components = self.options.get("components", None)
@@ -96,19 +95,16 @@ class BootstrapPlugin(Base):
         # Enable extract hooks.
         extract_hooks = self.options.get("extract-hook", None)
         if extract_hooks:
-            cmd.extend(
-                [f"--extract-hook={hook}" for hook in extract_hooks])
+            cmd.extend([f"--extract-hook={hook}" for hook in extract_hooks])
 
         # Enable customization hooks.
         customize_hooks = self.options.get("customize-hooks", None)
         if customize_hooks:
-            cmd.extend([f"--customize-hook={hook}"
-                        for hook in customize_hooks])
+            cmd.extend([f"--customize-hook={hook}" for hook in customize_hooks])
         # Enable essential hooks.
         essential_hooks = self.options.get("essential-hooks", None)
         if essential_hooks:
-            cmd.extend([f"--essential-hook={hook}"
-                       for hook in essential_hooks])
+            cmd.extend([f"--essential-hook={hook}" for hook in essential_hooks])
 
         cmd.extend([suite, target])
         utils.run_command(cmd, cwd=self.workspace)

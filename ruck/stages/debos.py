@@ -4,6 +4,7 @@ Copyright (c) 2024 Wind River Systems, Inc.
 SPDX-License-Identifier: Apache-2.0
 
 """
+
 import logging
 import shutil
 
@@ -31,11 +32,8 @@ class DebosPlugin(Base):
         if ostree_repo.exists():
             shutil.rmtree(ostree_repo)
 
-        run_command([
-            "ostree", "init", "--repo", ostree_repo])
-        run_command([
-            "ostree", "pull-local", "--repo", ostree_repo, repo, branch])
-        run_command([
-            "debos", "-t", f"branch:{branch}",
-            "-v", recipe],
-            cwd=self.workspace)
+        run_command(["ostree", "init", "--repo", ostree_repo])
+        run_command(["ostree", "pull-local", "--repo", ostree_repo, repo, branch])
+        run_command(
+            ["debos", "-t", f"branch:{branch}", "-v", recipe], cwd=self.workspace
+        )
