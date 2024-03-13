@@ -10,8 +10,8 @@ import os
 import shlex
 import subprocess
 
-from ruck.stages.base import Base
 from ruck import utils
+from ruck.stages.base import Base
 
 
 class ImagePlugin(Base):

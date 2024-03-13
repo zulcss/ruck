@@ -10,13 +10,11 @@ import os
 import pathlib
 import shutil
 
+from ruck import exceptions, utils
 from ruck.archive import unpack
-from ruck import exceptions
-from ruck.mount import mount
-from ruck.mount import umount
+from ruck.mount import mount, umount
 from ruck.ostree import Ostree
 from ruck.stages.base import Base
-from ruck import utils
 
 
 class OstreeBase(Base):

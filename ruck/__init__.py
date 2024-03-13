@@ -14,6 +14,5 @@
 
 import pbr.version
 
-
 __version__ = pbr.version.VersionInfo(
     'ruck').version_string()

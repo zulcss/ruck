@@ -9,12 +9,12 @@ import logging
 import subprocess
 import sys
 
+# pylint: disable=wrong-import-position
+import gi
 from rich.console import Console
 
 from ruck.utils import run_command
 
-# pylint: disable=wrong-import-position
-import gi
 gi.require_version("OSTree", "1.0")
 from gi.repository import Gio, GLib, OSTree  # noqa:H301
 from gi.repository.GLib import Variant, VariantDict  # noqa:H301

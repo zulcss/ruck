@@ -5,8 +5,7 @@ SPDX-License-Identifier: Apache-2.0
 
 """
 
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 
 class Base(ABC):
