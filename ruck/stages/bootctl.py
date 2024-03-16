@@ -52,23 +52,24 @@ class SDBootPlugin(Base):
         self.rootfs.mkdir(parents=True, exist_ok=True)
         self.logging.info(f"Mounting {self.image} on {self.rootfs}")
 
+        mount(self.image, self.rootfs)
+
         self.logging.info("Installing bootloader")
         utils.run_chroot(
             ["bootctl", "install",
              "--no-variables",
              "--entry-token", "os-id"],
-            self.image)
-
-        mount(self.image, self.rootfs)
+            self.rootfs,
+            efi=self.rootfs)
 
         kver = self.install_kernel()
         self.logging.info(f"Unmounting {self.rootfs}.")
-        umount(self.rootfs)
 
         self.logging.info(f"Installing kernel {kver}.")
         utils.run_chroot(
             ["kernel-install", "add", kver, f"/boot/vmlinuz-{kver}"],
-            self.image)
+            self.rootfs, efi=self.rootfs)
+        umount(self.rootfs)
 
     def install_kernel(self):
         """Configure kernel cmdine."""

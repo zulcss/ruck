@@ -1,0 +1,10 @@
+How to run ruck in container
+
+docker build -t ruck docker/
+docker run -i -t --privileged -v /sys:/sys -v /dev:/dev -v /run:/run -v $(pwd):/usr/src ruck
+
+Inside the container:
+
+pip install -r requirements.txt
+export PBR_VERSION=1.0.0
+pip install -e .

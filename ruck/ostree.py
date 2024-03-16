@@ -6,7 +6,6 @@ SPDX-License-Identifier: Apache-2.0
 """
 
 import logging
-import subprocess
 import sys
 
 from rich.console import Console
@@ -80,12 +79,7 @@ class Ostree:
         if parent:
             cmd += [f"--parent={parent}"]
         cmd += [f"--tree=dir={str(root)}"]
-        r = run_command(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if r.returncode != 0:
-            self.logging.error("Failed to commit to tree.")
-            sys.exit(1)
-        self.logging.info(f"Sucessfully commited to {branch}.")
-        return r
+        return run_command(cmd)
 
     def get_sysroot(self):
         """Load the /ostree directory (sysroot)."""

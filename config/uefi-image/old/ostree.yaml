@@ -1,9 +1,0 @@
----
-name: ruck-demo
-parameters:
-  target: rootfs.tar.gz
-steps:
-  - step: ostree_init
-    options:
-      source: rootfs.tar.gz
-      target: demo.img

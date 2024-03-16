@@ -1,9 +1,0 @@
----
-name: ruck-demo
-parameters:
-  image: demo.img
-steps:
-  - step: disk
-    options:
-      definition: partitions
-      size: 10G

@@ -7,51 +7,62 @@ SPDX-License-Identifier: Apache-2.0
 import subprocess
 
 
-def run_command(argv, **kwargs):
+def run_command(args, data=None, env=None, capture=False, shell=False,
+                **kwargs):
     """Run a command in a shell."""
     try:
-        return subprocess.run(
-            argv, **kwargs)
-    except subprocess.CalledProcessError as e:
-        raise e
+        if not capture:
+            stdout = None
+            stderr = None
+        else:
+            stdout = subprocess.PIPE
+            stderr = subprocess.PIPE
+        stdin = subprocess.PIPE
+        sp = subprocess.Popen(args, stdout=stdout,
+                              stderr=stderr, stdin=stdin,
+                              env=env, shell=shell, universal_newlines=True,
+                              **kwargs)
+        (out, err) = sp.communicate(data)
+    except OSError:
+        raise Exception(f"failed to run cmd: {args}")
+    # Just ensure blank instead of none
+    if not out and capture:
+        out = out
+    if not err and capture:
+        err = err
+    return (out, err)
 
 
-def run_chroot(args, image, **kwargs):
-    """Run a command in a seperate namespace."""
-    cmd = [
-        "systemd-nspawn",
-        "--quiet",
-        "--as-pid2",
-        "-i",
-        image
-    ]
-    cmd += args
-
-    return run_command(cmd, **kwargs)
-
-
-def bwrap(args, rootfs, workspace=None, efi=False, **kwargs):
+def run_chroot(args, rootfs, efi=None, data=None, env=None, capture=False, shell=False,
+               **kwargs):
     """Run bubblewarap in a seperate namespace."""
-    cmd = [
-        "bwrap",
-        "--bind", rootfs, "/",
-        "--proc", "/proc",
-        "--dev-bind", "/dev", "/dev",
-        "--bind", "/sys", "/sys",
-        "--dir", "/run",
-        "--bind", "/tmp", "/tmp",
-        "--share-net",
-        "--die-with-parent",
-        "--chdir", "/",
-    ]
-
-    if efi:
-        cmd += [
-            "--bind", f"{workspace}/efi", "/efi",
-            "--bind", "/sys/firmware/efi/efivars", "/sys/firmware/efi/efivars",
+    try:
+        cmd = [
+            "bwrap",
+            "--bind", rootfs, "/",
+            "--bind", f"{efi}/efi", "/efi",
+            "--bind", f"{efi}/efi", "/boot/efi",
+            "--ro-bind", "/etc/resolv.conf", "/etc/resolv.conf",
+            "--proc", "/proc",
+            "--dev-bind", "/dev", "/dev",
+            "--bind", "/sys", "/sys",
+            "--dir", "/run",
+            "--bind", "/tmp", "/tmp",
+            "--share-net",
+            "--die-with-parent",
+            "--chdir", "/",
         ]
-
-    print(cmd)
-    cmd += args
-
-    return run_command(cmd, **kwargs)
+        cmd += args
+        (out, err) = run_command(cmd,
+                                 data=data,
+                                 env=env,
+                                 capture=capture,
+                                 shell=shell,
+                                 **kwargs)
+    except OSError:
+        raise Exception(f"Failed to run chroot command: {args}")
+    if not out and capture:
+        out = out
+    if not err and capture:
+        err = err
+    return (out, err)

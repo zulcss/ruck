@@ -36,7 +36,6 @@ class OstreeInitPlugin(OstreeBase):
         self.logging.info("Creating ostree repository.")
 
         repo = pathlib.Path(self.options.get("repo"))
-        mode = self.options.get("mode")
 
         if not repo.exists():
             utils.run_command(
@@ -91,8 +90,7 @@ class OstreeDeployPlugin(OstreeBase):
         self.logging.info("Setting up bootloader.")
         for d in rootfs.glob("ostree/deploy/debian/deploy/*.0"):
             repo_root = d
-        utils.bwrap(["bootctl", "install"], repo_root,
-                    workspace=rootfs, efi=True)
+        utils.run_chroot(["bootctl", "install"], repo_root, efi=rootfs)
         shutil.copytree(rootfs.joinpath("boot/ostree"),
                         rootfs.joinpath("efi/ostree"))
         shutil.copy2(
@@ -212,4 +210,5 @@ class OstreePrepPlugin(OstreeBase):
             os.rename(os.path.join(bootdir, initrd),
                       os.path.join(targetdir,
                                    initrd.replace(
-                                       "initrd.img", "initramfs") + "-" + csum))
+                                       "initrd.img", "initramfs")
+                                   + "-" + csum))

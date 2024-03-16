@@ -47,7 +47,7 @@ class DeployPlugin(Base):
 
         target = self.workspace.joinpath(self.options.get("source"))
         if not target.exists():
-            raise exceptions.COnfigError(f"{target} not found.")
+            raise exceptions.ConfigError(f"{target} not found.")
 
         image = self.workspace.joinpath(self.options.get("target"))
         if not image.exists():

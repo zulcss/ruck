@@ -5,9 +5,8 @@ FROM debian:testing
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         mmdebstrap \
+        bubblewrap \
         dosfstools \
-        systemd \
-        systemd-boot \
         python3-pip \
         python3-yaml \
         python3-rich \
@@ -19,6 +18,13 @@ RUN apt-get update && \
         dosfstools \
         systemd-container \
         ostree \
+        libostree-dev \
+        gir1.2-glib-2.0 \
+        gir1.2-ostree-1.0 \
+        libcairo2-dev \
+        libgirepository1.0-dev \
+        parted \
+        fdisk \
         debos \
         rsync \
         dosfstools \
@@ -27,6 +33,9 @@ RUN apt-get update && \
         rm -rf /var/lib/apt/lists/*
 
 COPY files/pip.conf /etc/pip.conf
+
+# Needed for uefi-ostree
+RUN mkdir -p /var/www/html
 
 RUN mkdir -p usr/src
 

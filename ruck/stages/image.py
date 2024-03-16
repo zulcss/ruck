@@ -32,7 +32,7 @@ class ImagePlugin(Base):
         self.create_image()
         self.create_label()
         self.create_partitions()
-        self.create_filelsystems()
+        self.create_filesystems()
 
     def create_image(self):
         self.image = self.workspace.joinpath(self.images.get("name"))
@@ -56,7 +56,7 @@ class ImagePlugin(Base):
     def create_partitions(self):
         """Use parted to create the partitions."""
         for index, part in enumerate(self.partitions, start=1):
-            utils.run_command(
+            (out, err) = utils.run_command(
                 ["parted", "-s", self.image, "--", "mkpart", part.get("name"),
                  part.get("start"), part.get("end")])
             flags = part.get("flags")
@@ -69,18 +69,15 @@ class ImagePlugin(Base):
                 cmd = f"sfdisk --part-type {self.image} {index} {part_type}"
                 utils.run_command(shlex.split(cmd))
 
-    def create_filelsystems(self):
+    def create_filesystems(self):
         """Setup the image for the filesystems to be formatted."""
         self.logging.info("Setting up loopback device.")
         try:
             self.logging.info(f"Creating device map for {self.image}")
             loop = self.losetup()
 
-            subprocess.run(
-                ["kpartx", "-a", loop], check=True)
-
             for index, part in enumerate(self.filesystems, start=1):
-                fs = f"/dev/mapper/{os.path.basename(loop)}p{index}"
+                fs = f"/dev/{os.path.basename(loop)}p{index}"
                 if os.path.exists(fs):
                     self.mkfs(fs,
                               part.get("fs"),
@@ -89,7 +86,6 @@ class ImagePlugin(Base):
 
         finally:
             subprocess.run(["losetup", "-d", loop], check=True)
-            subprocess.run(["kpartx", "-d", self.image], check=True)
 
     def mkfs(self, fs, fs_type, label, name):
         """Formatting the filesystem."""
@@ -106,7 +102,7 @@ class ImagePlugin(Base):
 
     def losetup(self):
         """Find an empty loopt back device."""
-        cmd = f"losetup --find --show {self.image}"
+        cmd = f"losetup -P  --find --show {self.image}"
         return subprocess.run(shlex.split(cmd),
                               encoding="utf8",
                               check=True,
