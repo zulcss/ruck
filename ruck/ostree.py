@@ -16,7 +16,6 @@ from ruck.utils import run_command
 import gi
 gi.require_version("OSTree", "1.0")
 from gi.repository import Gio, GLib, OSTree  # noqa:H301
-from gi.repository.GLib import Variant, VariantDict  # noqa:H301
 
 # Using AT_FDCWD value from fcntl.h
 AT_FDCWD = -100
