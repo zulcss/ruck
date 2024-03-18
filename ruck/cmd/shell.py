@@ -10,6 +10,7 @@ import click
 from ruck.cmd.build import build
 from ruck.cmd.init import init
 from ruck.cmd.options import workspace_option
+from ruck.cmd.vm import vm
 from ruck.cmd import pass_state_context
 from ruck.log import setup_log
 
@@ -30,3 +31,4 @@ def main():
 # ruck sub-commands
 cli.add_command(build)
 cli.add_command(init)
+cli.add_command(vm)

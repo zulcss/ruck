@@ -37,3 +37,34 @@ def workspace_option(f):
         required=True,
         callback=callback
     )(f)
+
+
+""" Virtual machine options. """
+
+
+def name_option(f):
+    def callback(ctxt, param, value):
+        state = ctxt.ensure_object(State)
+        state.name = value
+        return value
+    return click.option(
+        "--name",
+        help="Name of virtual machine",
+        nargs=1,
+        required=True,
+        callback=callback
+    )(f)
+
+
+def disk_option(f):
+    def callback(ctxt, param, value):
+        state = ctxt.ensure_object(State)
+        state.disk = value
+        return value
+    return click.option(
+        "--disk",
+        help="Path to the virtual machine's disk",
+        nargs=1,
+        required=True,
+        callback=callback
+    )(f)

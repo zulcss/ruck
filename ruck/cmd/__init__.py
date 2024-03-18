@@ -12,6 +12,10 @@ class State:
         self.config = None
         self.workspace = None
 
+        # vm options
+        self.name = None
+        self.disk = None
+
 
 # pass state between command and apt-ostree sub-commands
 pass_state_context = click.make_pass_decorator(State, ensure=True)
