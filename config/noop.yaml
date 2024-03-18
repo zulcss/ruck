@@ -3,4 +3,3 @@ name: ExampleOs
 parameters:
 steps:
   - step: noop
-    options: !include manifests/noop.yaml
