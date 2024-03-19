@@ -7,7 +7,11 @@ SPDX-License-Identifier: Apache-2.0
 import logging
 import sys
 
-import libvirt
+try:
+    import libvirt
+except ImportError:
+    print("Libvirt python bindings are not found. 'ruck vm' will not work.")
+
 from rich import console
 from rich.table import Table
 
