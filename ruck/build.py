@@ -8,8 +8,8 @@ import shutil
 
 from stevedore import driver
 
-from ruck.config import Config
 from ruck import exceptions
+from ruck.config import Config
 
 
 class Build(object):

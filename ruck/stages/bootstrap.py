@@ -8,10 +8,9 @@ SPDX-License-Identifier: Apache-2.0
 import logging
 import shutil
 
-from ruck import exceptions
+from ruck import exceptions, utils
 from ruck.schema import validate
 from ruck.stages.base import Base
-from ruck import utils
 
 SCHEMA = {
     "step": {"type": "string", "required": True},

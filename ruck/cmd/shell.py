@@ -6,9 +6,9 @@ SPDX-License-Identifier: Apache-2.0
 """
 import click
 
+from ruck.cmd import pass_state_context
 from ruck.cmd.build import build
 from ruck.cmd.options import workspace_option
-from ruck.cmd import pass_state_context
 from ruck.log import setup_log
 
 

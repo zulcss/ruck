@@ -7,8 +7,9 @@ SPDX-License-Identifier: Apache-2.0
 import click
 
 from ruck.build import Build
-from ruck.cmd.options import config_option
 from ruck.cmd import pass_state_context
+from ruck.cmd.options import config_option
+
 
 @click.command(
     help="Build Debian artifact from manifest.")

@@ -7,12 +7,10 @@ SPDX-License-Identifier: Apache-2.0
 
 import logging
 
-from ruck import exceptions
-from ruck.mount import mount
-from ruck.mount import umount
+from ruck import exceptions, utils
+from ruck.mount import mount, umount
 from ruck.schema import validate
 from ruck.stages.base import Base
-from ruck import utils
 
 SCHEMA = {
     "step": {"type": "string"},

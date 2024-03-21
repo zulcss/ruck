@@ -7,9 +7,8 @@ SPDX-License-Identifier: Apache-2.0
 import logging
 import pathlib
 
-from ruck import exceptions
+from ruck import exceptions, utils
 from ruck.stages.base import Base
-from ruck import utils
 
 
 class OstreeBase(Base):
