@@ -9,10 +9,8 @@ from ruck import utils
 
 
 def mount(image, rootfs):
-    utils.run_command(
-        ["systemd-dissect", "-M", image, rootfs])
+    utils.run_command(["systemd-dissect", "-M", image, rootfs])
 
 
 def umount(rootfs):
-    utils.run_command(
-        ["systemd-dissect", "-U", rootfs])
+    utils.run_command(["systemd-dissect", "-U", rootfs])

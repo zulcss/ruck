@@ -3,6 +3,7 @@ Copyright (c) 2024 Wind River Systems, Inc.
 
 SPDX-License-Identifier: Apache-2.0
 """
+
 import os
 
 import yaml
@@ -32,7 +33,6 @@ class Config(object):
         """Load the manifest.yaml"""
         with open(self.state.config, "r") as f:
             try:
-               return yaml.safe_load(f)
+                return yaml.safe_load(f)
             except yaml.YAMLError:
-                raise exceptions.ConfigError(
-                    "Unable to parse configuration file.")
+                raise exceptions.ConfigError("Unable to parse configuration file.")

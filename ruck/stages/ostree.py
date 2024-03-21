@@ -4,6 +4,7 @@ Copyright (c) 2024 Wind River Systems, Inc.
 SPDX-License-Identifier: Apache-2.0
 
 """
+
 import logging
 import pathlib
 
@@ -32,5 +33,4 @@ class OstreeInitPlugin(OstreeBase):
         if repo.exists():
             raise exceptions.ConfigError(f"{repo} already exists.")
 
-        utils.run_command(
-            ["ostree", "init", "--repo", repo, "--mode", mode])
+        utils.run_command(["ostree", "init", "--repo", repo, "--mode", mode])

@@ -4,6 +4,7 @@ Copyright (c) 2024 Wind River Systems, Inc.
 SPDX-License-Identifier: Apache-2.0
 
 """
+
 import logging
 
 from ruck.archive import unpack
@@ -13,10 +14,8 @@ SCHEMA = {
     "target": {"type": "string"},
     "options": {
         "type": "dict",
-        "schema": {
-                "target": {"type": "string", "required": True}
-            },
-        }
+        "schema": {"target": {"type": "string", "required": True}},
+    },
 }
 
 

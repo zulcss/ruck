@@ -21,7 +21,7 @@ SCHEMA = {
             "source": {"type": "string", "required": True},
             "target": {"type": "string", "required": True},
         },
-    }
+    },
 }
 
 

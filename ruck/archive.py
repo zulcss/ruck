@@ -14,6 +14,4 @@ log = logging.getLogger(__name__)
 
 def unpack(archive, rootfs):
     log.info(f"Unpaking {archive}.")
-    utils.run_command(
-        ["tar", "-C", rootfs, "-zxf", archive, "--numeric-owner"]
-    )
+    utils.run_command(["tar", "-C", rootfs, "-zxf", archive, "--numeric-owner"])

@@ -19,14 +19,17 @@ class RuckError(Exception):
 
 class ConfigError(RuckError):
     """Ruck cofiguration error."""
+
     pass
 
 
 class CommandNotFoundError(RuckError):
     """Program not found in path error."""
+
     pass
 
 
 class SchemaError(RuckError):
     """Schema configuration error."""
+
     pass
