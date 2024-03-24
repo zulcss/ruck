@@ -1,8 +1,5 @@
 ---
 name: pablo
-parameters:
-  image: pablo.img
-  target: rootfs.tar.gz
 steps:
   - step: bootstrap
     options:
