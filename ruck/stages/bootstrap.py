@@ -28,6 +28,10 @@ SCHEMA = {
                 "extract-hooks": {"type": "list"},
                 "customize-hooks": {"type": "list"},
                 "essential-hooks": {"type": "list"},
+                "aptopt": {"type": "list"},
+                "keyring": {"type": "list"},
+                "dpkgopts": {"type": "list"},
+                "mode": {"type": "string"},
             },
         }
 }
@@ -109,6 +113,29 @@ class BootstrapPlugin(Base):
         if essential_hooks:
             cmd.extend([f"--essential-hook={hook}"
                        for hook in essential_hooks])
+
+        # Enable apt options.
+        apt_opts = self.options.get("apt-opts", None)
+        if apt_opts:
+            cmd.extend([f"--aptopt={hook}",
+                        for hook in apt_opts])
+
+        # Enable mode option
+        mode = self.options.get("mode", None)
+        if mode:
+            cmd.extend([f"--mode={mode}"])
+
+        # Enable additional keyrings
+        keyrings = self.options.get("keyring", None)
+        if keyrings:
+            cmd.extend([f"--keyring={hook}",
+                        for hook in keyrings])
+
+        # Enable dpkgopt
+        dpkg_opts = self.options.get("dpkgopt", None)
+        if dpkg_opts:
+            cmd.extend([f"--dpkgopts='{hook}'",
+                        for hook in dpkg_opts])
 
         cmd.extend([suite, target])
         utils.run_command(cmd, cwd=self.workspace)
