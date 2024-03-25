@@ -9,21 +9,8 @@ import os
 import shutil
 
 from ruck import exceptions
-from ruck.schema import validate
 from ruck.stages.base import Base
 from ruck.utils import run_command
-
-SCHEMA = {
-    "step": {"type": "string", "required": True},
-    "options": {
-        "type": "dict",
-        "schema": {
-            "definition": {"type": "string", "required": True},
-            "size": {"type": "string", "required": True},
-            "image": {"type": "string", "required": True},
-            }
-        },
-    }
 
 
 class RepartPlugin(Base):
@@ -33,38 +20,44 @@ class RepartPlugin(Base):
         self.workspace = workspace
         self.logging = logging.getLogger(__name__)
 
-        self.options = self.config.get("options")
-
         self.repart = shutil.which("systemd-repart")
 
-    def run(self):
-        """Create a DDI based disk image using systemd-repart."""
-        self.logging.info("Creating DDI disk.")
+    def preflight_check(self):
+        """Check for valid options."""
         if self.repart is None:
             raise exceptions.CommandNotFoundError(
                 "systemd-repart is not found.")
-
-        state = validate(self.config, SCHEMA)
-        if not state:
-            raise exceptions.ConfigError("Configuration is invalid.")
-
-        image = self.workspace.joinpath(self.options.get("image"))
-        if image.exists():
+        if self.config.options.image is None:
+            raise exceptions.ConfigError(
+                "Image to create is not specified.")
+        if self.config.options.size is None:
+            raise exceptions.ConfigError(
+                "Image size is not specified.")
+        self.image = self.workspace.joinpath(
+                        self.config.options.image)
+        if self.image.exists():
             # systemd-repart errors out if image already exists.
-            self.logging.info(f"Removing {image}.")
-            os.unlink(image)
-        definitions = self.workspace.joinpath(self.options.get("definition"))
-        if not definitions.exists():
-            raise exceptions.ConfigError(f"Unable to find {definitions}.")
-        size = self.options.get("size")
+            self.logging.info(f"Removing {self.image}")
+        self.definitions = self.workspace.joinpath(
+                self.config.options.definitions)
+        if not self.definitions.exists():
+            raise exceptions.ConfigError(
+                f"{self.definitions} does not exist.")
+
+    def run(self):
+        """Create a DDI based disk image using systemd-repart."""
+        self.logging.info("Creating disk via systemd-repart.")
 
         run_command([
             self.repart,
-            "--definitions", str(definitions),
+            "--definitions", str(self.definitions),
             "--empty=create",
-            "--size", size,
+            "--size", self.config.options.size,
             "--dry-run=no",
             "--discard=no",
             "--no-pager",
-            str(image)],
+            str(self.image)],
             cwd=self.workspace)
+
+    def post_install(self):
+        self.logging.info(f"{self.image} can be found at {self.workspace}.")
