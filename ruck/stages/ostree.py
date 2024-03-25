@@ -91,7 +91,7 @@ class OstreeDeployPlugin(OstreeBase):
         self.logging.info("Setting up bootloader.")
         for d in rootfs.glob("ostree/deploy/debian/deploy/*.0"):
             repo_root = d
-        utils.run_chroot(["bootctl", "install"], repo_root, efi=rootfs)
+        utils.run_chroot_command(["bootctl", "install"], repo_root, efi=rootfs)
         shutil.copytree(rootfs.joinpath("boot/ostree"),
                         rootfs.joinpath("efi/ostree"))
         shutil.copy2(

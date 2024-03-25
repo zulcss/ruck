@@ -12,7 +12,6 @@ RUN apt-get update && \
         python3-rich \
         python3-stevedore \
         python3-cerberus \
-        python3-systemd \
         python3-click \
         python3-gi \
         dosfstools \

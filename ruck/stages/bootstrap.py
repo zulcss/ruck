@@ -9,32 +9,9 @@ import logging
 import shutil
 
 from ruck import exceptions
-from ruck.schema import validate
 from ruck.stages.base import Base
+from ruck.config import get_config
 from ruck import utils
-
-SCHEMA = {
-    "step": {"type": "string", "required": True},
-    "options": {
-        "type": "dict",
-        "schema": {
-                "target": {"type": "string", "required": True},
-                "suite": {"type": "string", "required": True},
-                "packages": {"type": "list"},
-                "variant": {"type": "string"},
-                "components": {"type": "list"},
-                "hooks": {"type": "list"},
-                "setup-hooks": {"type": "list"},
-                "extract-hooks": {"type": "list"},
-                "customize-hooks": {"type": "list"},
-                "essential-hooks": {"type": "list"},
-                "aptopt": {"type": "list"},
-                "keyring": {"type": "list"},
-                "dpkgopts": {"type": "list"},
-                "mode": {"type": "string"},
-            },
-        }
-}
 
 
 class BootstrapPlugin(Base):
@@ -44,98 +21,75 @@ class BootstrapPlugin(Base):
         self.workspace = workspace
         self.logging = logging.getLogger(__name__)
 
-        self.options = self.config.get("options")
-
+    def preflight_check(self):
+        self.logging.info("Performing pre-flight checks.")
         self.mmdebstrap = shutil.which("mmdebstrap")
+        if not self.mmdebstrap:
+            raise exceptions.CommandNotFoundError(
+                    "mmdebstroap is not found.")
+        if not self.config.options.suite:
+            raise exceptions.ConfigError(
+                "Suite is not specified.")
+        if not self.config.options.target:
+            raise exceptions.ConfigError(
+                "target is not specified.")
+        self.logging.info(self.config.options.target)
 
     def run(self):
         """Run the mmdebstrap command."""
-        self.logging.info("Running mmdebstrap.")
-        if self.mmdebstrap is None:
-            raise exceptions.CommandNotFoundError("mmdebstrap is not found.")
-
-        status = validate(self.config, SCHEMA)
-        if not status:
-            raise exceptions.ConfigError("Invalid schema.")
-
-        suite = self.options.get("suite")
-        target = self.options.get("target")
+        self.logging.info(f"Running mmdebstrap.")
 
         cmd = [
             self.mmdebstrap,
-            "--architecture", "amd64",
+            "--architecture", self.config.options.architecture,
             "--verbose",
         ]
 
-        # Install extra packages.
-        packages = self.options.get("packages", None)
+        # Extend mmdesbtrap configuration, see manpage for details.
+        packages = get_config(self.config, "options.packages")
         if packages:
-            cmd.extend([f"--include={','.join(packages)}"])
-
-        customize_hooks = self.options.get("customize-hooks", None)
+            cmd.extend([f"--include={', '.join(packages)}"])
+        customize_hooks = get_config(self.config, "options.customize_hooks")
         if customize_hooks:
-            cmd.extend([f"--customize-hook={hook}"
+            cmd.extend([f"--customize-hook={hook}" 
                         for hook in customize_hooks])
-
-        # Enable extra components (main, non-free, etc).
-        components = self.options.get("components", None)
+        components = get_config(self.config, "options.compoents")
         if components:
-            cmd.extend([f"--components={','.join(components)}"])
-
-        # Enable variants.
-        variant = self.options.get("variant", None)
+            cmd.extend([f"--components={','.join(scomponents)}"])
+        variant = get_config(self.config, "options.varant")
         if variant:
             cmd.extend([f"--variant={variant}"])
-
-        # Enable hooks.
-        hooks = self.options.get("hooks", None)
+        hooks = get_config(self.config, "options.hooks")
         if hooks:
             cmd.extend([f"--hook-directory={hook}" for hook in hooks])
-
-        # Enable setup hooks
-        setup_hooks = self.options.get("setup-hooks", None)
+        setup_hooks = get_config(self.config, "options.setup_hooks")
         if setup_hooks:
             cmd.extend([f"--setup-hook={hook}" for hook in setup_hooks])
-
-        # Enable extract hooks.
-        extract_hooks = self.options.get("extract-hook", None)
+        extract_hooks = get_config(self.config, "options.extract_hooks")
         if extract_hooks:
-            cmd.extend(
-                [f"--extract-hook={hook}" for hook in extract_hooks])
-
-        # Enable customization hooks.
-        customize_hooks = self.options.get("customize-hooks", None)
-        if customize_hooks:
-            cmd.extend([f"--customize-hook={hook}"
-                        for hook in customize_hooks])
-        # Enable essential hooks.
-        essential_hooks = self.options.get("essential-hooks", None)
+            cmd.extend([f"--extract-hook={hook}"
+                        for hook in extract_hooks])
+        essential_hooks = get_config(self.config, "options.essential_hooks")
         if essential_hooks:
-            cmd.extend([f"--essential-hook={hook}"
-                       for hook in essential_hooks])
-
-        # Enable apt options.
-        apt_opts = self.options.get("apt-opts", None)
-        if apt_opts:
-            cmd.extend([f"--aptopt={hook}"
-                        for hook in apt_opts])
-
-        # Enable mode option
-        mode = self.options.get("mode", None)
+            cmd.extend([f"--essential-hook={hook}" for hook in eseential_hooks])
+        apt_hooks = get_config(self.config, "options.apt_hooks")
+        if apt_hooks:
+            cmd.extend([f"--aptopt={hook}" for hook in apt_hookss])
+        mode = get_config(self.config, "options.mode")
         if mode:
             cmd.extend([f"--mode={mode}"])
-
-        # Enable additional keyrings
-        keyrings = self.options.get("keyring", None)
-        if keyrings:
-            cmd.extend([f"--keyring={hook}"
-                        for hook in keyrings])
-
-        # Enable dpkgopt
-        dpkg_opts = self.options.get("dpkgopt", None)
+        keyring = get_config(self.config, "options.keyring")
+        if keyring:
+            cmd.extend([f"--keyring={hook}" for hook in keyring])
+        dpkg_opts = get_config(self.config, "options.dpkgopt")
         if dpkg_opts:
-            cmd.extend([f"--dpkgopts='{hook}'"
-                        for hook in dpkg_opts])
+            cmd.extend([f"--dpkgopts='{hook}'" for hook in dpkg_opts])
 
+        suite = get_config(self.config, "options.suite")
+        target = self.workspace.joinpath(
+            get_config(self.config, "options.target"))
         cmd.extend([suite, target])
-        utils.run_command(cmd, cwd=self.workspace)
+        utils.run_command(cmd)
+
+    def post_install(self):
+        pass

@@ -1,0 +1,24 @@
+---
+name: pablo-tarball
+description: "Create the base tarball used for everything."
+architecture: amd64
+version: 0.1
+schemaVersion: 1
+params:
+  version: ${version}
+  arch: x86_64
+  tarball: pablo-rootfs-${version}-${architecture}.tar.gz
+phases:
+  - name: "Creating tarball."
+    stage: bootstrap
+    options:
+      suite: bookworm
+      target: ${params.tarball}
+      architecture: ${architecture}
+      setup_hooks:
+        - 'sync-in overlay/debian/ /'
+      customize_hooks:
+        - echo 'root:root' | chroot "$1" chpasswd
+        - systemctl enable --root="$1" systemd-networkd
+        - chroot $1 echo "localhost" > $1/etc/hostnam
+      packages: !include manifests/software.yaml

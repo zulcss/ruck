@@ -55,7 +55,7 @@ class SDBootPlugin(Base):
         mount(self.image, self.rootfs)
 
         self.logging.info("Installing bootloader")
-        utils.run_chroot(
+        utils.run_chroot_command(
             ["bootctl", "install",
              "--no-variables",
              "--entry-token", "os-id"],
@@ -65,8 +65,8 @@ class SDBootPlugin(Base):
         kver = self.install_kernel()
         self.logging.info(f"Unmounting {self.rootfs}.")
 
-        self.logging.info(f"Installing kernel {kver}.")
-        utils.run_chroot(
+        self.logging.info(f"Insalling kernel {kver}.")
+        utils.run_chroot_command(
             ["kernel-install", "add", kver, f"/boot/vmlinuz-{kver}"],
             self.rootfs, efi=self.rootfs)
         umount(self.rootfs)

@@ -15,5 +15,13 @@ class Base(ABC):
         self.rootfs = None
 
     @abstractmethod
+    def preflight_check(self):
+        pass
+
+    @abstractmethod
     def run(self):
+        pass
+
+    @abstractmethod
+    def post_install(self):
         pass

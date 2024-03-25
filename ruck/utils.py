@@ -33,8 +33,8 @@ def run_command(args, data=None, env=None, capture=False, shell=False,
     return (out, err)
 
 
-def run_chroot(args, rootfs, efi=None, data=None, env=None, capture=False,
-               shell=False, **kwargs):
+def run_chroot_command(args, rootfs, efi=None, data=None, env=None, capture=False,
+                      shell=False, **kwargs):
     """Run bubblewarap in a seperate namespace."""
     try:
         cmd = [

@@ -8,7 +8,6 @@ import logging
 
 from rich.console import Console
 from rich.logging import RichHandler
-from systemd.journal import JournalHandler
 
 
 def setup_log(debug=False):
@@ -17,13 +16,6 @@ def setup_log(debug=False):
 
     rootLogger = logging.getLogger()
     rootLogger.setLevel(logging.NOTSET)
-
-    journald_handler = JournalHandler(
-        SYSLOG_IDENTIFIER="apt-ostree")
-    journald_handler.setLevel(level)
-    journald_handler.setFormatter(logging.Formatter(
-        '[%(levelname)s] %(message)s'))
-    rootLogger.addHandler(journald_handler)
 
     console = Console(color_system=None)
 
