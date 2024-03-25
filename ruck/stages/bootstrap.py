@@ -117,7 +117,7 @@ class BootstrapPlugin(Base):
         # Enable apt options.
         apt_opts = self.options.get("apt-opts", None)
         if apt_opts:
-            cmd.extend([f"--aptopt={hook}",
+            cmd.extend([f"--aptopt={hook}"
                         for hook in apt_opts])
 
         # Enable mode option
@@ -128,13 +128,13 @@ class BootstrapPlugin(Base):
         # Enable additional keyrings
         keyrings = self.options.get("keyring", None)
         if keyrings:
-            cmd.extend([f"--keyring={hook}",
+            cmd.extend([f"--keyring={hook}"
                         for hook in keyrings])
 
         # Enable dpkgopt
         dpkg_opts = self.options.get("dpkgopt", None)
         if dpkg_opts:
-            cmd.extend([f"--dpkgopts='{hook}'",
+            cmd.extend([f"--dpkgopts='{hook}'"
                         for hook in dpkg_opts])
 
         cmd.extend([suite, target])
