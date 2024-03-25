@@ -27,3 +27,8 @@ phases:
       image: pablo-image-${version}-${architecture}.img
       size: 20G
       definitions: partitions
+  - name: "Unpack tarball"
+    stage: deploy
+    options:
+      source: pablo-rootfs-${version}-${architecture}.tar.gz
+      target: pablo-image-${version}-${architecture}.img

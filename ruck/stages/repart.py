@@ -38,6 +38,7 @@ class RepartPlugin(Base):
         if self.image.exists():
             # systemd-repart errors out if image already exists.
             self.logging.info(f"Removing {self.image}")
+            os.unlink(self.image)
         self.definitions = self.workspace.joinpath(
                 self.config.options.definitions)
         if not self.definitions.exists():

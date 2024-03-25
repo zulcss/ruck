@@ -20,5 +20,5 @@ phases:
       customize_hooks:
         - echo 'root:root' | chroot "$1" chpasswd
         - systemctl enable --root="$1" systemd-networkd
-        - chroot $1 echo "localhost" > $1/etc/hostnam
+        - chroot $1 echo "localhost" > $1/etc/hostname
       packages: !include manifests/software.yaml
