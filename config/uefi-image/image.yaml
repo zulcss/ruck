@@ -32,3 +32,9 @@ phases:
     options:
       source: pablo-rootfs-${version}-${architecture}.tar.gz
       target: pablo-image-${version}-${architecture}.img
+  - name: "Installing bootloader"
+    stage: bootloader
+    options:
+      type: sd-boot
+      image: pablo-image-${version}-${architecture}.img
+      kernel_cmdline: "root=LABEL=ROOT console=tty0 console=ttyS0,115200"

@@ -1,57 +1,50 @@
 ---
-name: ExamplesOS-ostree
-steps:
-  - step: bootstrap
+name: pablo-ostree-amd64
+description: "AMD64 ostree configuration."
+architecture: amd64
+version: 0.1
+schemaVersion: 1
+params:
+  version: $[version}
+  tarball: pablo-rootfs-${version}-${architecture}.tar.gz
+  repo: /var/www/html/repo
+  image: pablo-image-ostree-${version}-${architecture}.img
+  branch: exampleos/testing
+phases:
+  - name: "Create rootfs"
+    stage: bootstrap
     options:
       suite: bookworm
-      target: rootfs.tar.gz
-      setup-hooks:
+      target: ${params.tarball}
+      architecture: ${architecture}
+      setup_hooks:
         - 'sync-in overlay/debian/ /'
-      customize-hooks:
+      customize_hooks:
         - echo 'root:root' | chroot "$1" chpasswd
         - systemctl enable --root="$1" systemd-networkd
         - chroot $1 echo "localhost" > $1/etc/hostname
         - mkdir -p $1/efi
       packages: !include manifests/software.yaml
-  - step: ostree_init
+  - name: "Create ostree repository"
+    stage: ostree_init
     options:
-      repo: /var/www/html/repo
+      repo: ${params.repo}
       mode: archive-z2
-  - step: ostree_prep
+  - name: "Prepare ostree branch."
+    step: ostree_prep
     options:
-      repo: /var/www/html/repo
-      branch: exampleos/testing
-      target: rootfs.tar.gz
-  - step: image
+      repo: ${params.repo}
+      branch: ${params.branch}
+      target: ${params.tarball}
+  - name: "Partition and format the disk."
+    stage: parted
+    options: !include manifests/disk.yaml
+  - name: "Deploy ostree branch to the disk."
+    step: ostree_deploy
     options:
-      image:
-        name: disk.img
-        size: 10G
-        label: gpt
-      partitions:
-        - name: EFI
-          start: 0%
-          end: 256MB
-          type: "c12a7328-f81f-11d2-ba4b-00a0c93ec93b"
-          flags: [boot, esp]
-        - name: ROOT
-          start: 256MB
-          end: 100%
-          type: "4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709"
-      filesystems:
-        - name: EFI
-          label: EFI
-          fs: vfat
-          options: []
-        - name: ROOT
-          label: ROOT
-          fs: ext4
-          options: []
-  - step: ostree_deploy
-    options:
-      repo: /var/www/html/repo
-      branch: exampleos/testing
-      image: disk.img
+      repo: ${params.repo}
+      branch: ${params.branch}
+      image: ${params.image}
       kernel_args:
         - root=LABEL=ROOT
         - rw
