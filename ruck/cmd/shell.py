@@ -10,8 +10,8 @@ import click
 from ruck.cmd.build import build
 from ruck.cmd.init import init
 from ruck.cmd.options import workspace_option
-from ruck.cmd.vm import vm
 from ruck.cmd import pass_state_context
+from ruck.cmd.vm import vm
 from ruck.log import setup_log
 
 

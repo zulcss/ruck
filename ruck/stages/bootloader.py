@@ -13,6 +13,7 @@ from ruck.mount import umount
 from ruck.stages.base import Base
 from ruck import utils
 
+
 class BootloaderPlugin(Base):
     def __init__(self, state, config, workspace):
         self.state = state
@@ -63,8 +64,8 @@ class BootloaderPlugin(Base):
                 ["bootctl", "install",
                  "--no-variables",
                  "--entry-token", "os-id"],
-                 self.rootfs,
-                 efi=self.rootfs)
+                self.rootfs,
+                efi=self.rootfs)
 
             kver = self._install_kernel()
             self.logging.info(f"Unmounting {self.rootfs}.")

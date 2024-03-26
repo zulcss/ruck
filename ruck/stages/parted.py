@@ -29,7 +29,6 @@ class PartedPlugin(Base):
         self.partitions = self.config.options.partitions
         self.filesystems = self.config.options.filesystems
 
-
     def run(self):
         self._create_image()
         self._create_label()
@@ -87,9 +86,9 @@ class PartedPlugin(Base):
                 fs = f"/dev/{os.path.basename(loop)}p{index}"
                 if os.path.exists(fs):
                     self._mkfs(fs,
-                              part.fs,
-                              part.label,
-                              part.name)
+                               part.fs,
+                               part.label,
+                               part.name)
 
         finally:
             subprocess.run(["losetup", "-d", loop], check=True)

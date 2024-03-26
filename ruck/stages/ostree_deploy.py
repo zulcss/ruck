@@ -4,25 +4,14 @@ Copyright (c) 2024 Wind River Systems, Inc.
 SPDX-License-Identifier: Apache-2.0
 
 """
-import logging
-import os
 import shutil
 
 from ruck import exceptions
 from ruck.mount import mount
 from ruck.mount import umount
-from ruck.ostree import Ostree
 from ruck.stages.base import OstreeBase
 from ruck import utils
 
-def ostree(*args, _input=None, **kwargs):
-    args = list(args) + [f'--{k}={v}' for k, v in kwargs.items()]
-    print("ostree " + " ".join(args), file=sys.stderr)
-    subprocess.run(["ostree"] + args,
-                   encoding="utf-8",
-                   stdout=sys.stderr,
-                   input=_input,
-                   check=True)
 
 class OstreeDeployPlugin(OstreeBase):
     def preflight_check(self):
@@ -33,16 +22,15 @@ class OstreeDeployPlugin(OstreeBase):
 
         self.rootfs = self.workspace.joinpath("rootfs")
         if self.rootfs.exists():
-            shutil.rmtree(rootfs)
+            shutil.rmtree(self.rootfs)
         if not self.image.exists():
             raise exceptions.ConfigError(f"Unable to find {self.image}.")
-
 
     def run(self):
         self.logging.info("Deploying ostree repository.")
 
         self.logging.info(f"Mounting {self.image} on {self.rootfs}")
-        try:    
+        try:
             mount(self.image, self.rootfs)
 
             ostree_repo = self.rootfs.joinpath("ostree/repo")
@@ -51,26 +39,27 @@ class OstreeDeployPlugin(OstreeBase):
             utils.run_command(
                 ["ostree", "init", "--repo", ostree_repo, "--mode", "bare"])
 
-            self.logging.info(f"Pulling {branch}")
+            self.logging.info(f"Pulling {self.branch}")
             utils.run_command(
                 ["ostree", "pull-local", "--repo", ostree_repo, self.repo,
                  self.branch])
             utils.run_command(
-                ["ostree", "config", "--repo", ostree_repo, "--group", "sysroot",
-                "set", "bootloader", "none"])
+                ["ostree", "config", "--repo", ostree_repo,
+                 "--group", "sysroot", "set", "bootloader", "none"])
 
-            self.logging.info(f"Configuring {image} for ostree.")
+            self.logging.info(f"Configuring {self.image} for ostree.")
             utils.run_command(
                 ["ostree", "admin", "init-fs", self.rootfs])
             utils.run_command(
-                ["ostree", "admin", "os-init", "--sysroot", self.rootfs, "debian"])
+                ["ostree", "admin", "os-init",
+                 "--sysroot", self.rootfs, "debian"])
 
-            self.logging.info(f"Deploying {branch}")
+            self.logging.info(f"Deploying {self.branch}")
             ostree_deploy = [
                 "ostree", "admin", "deploy",
                 "--sysroot", self.rootfs,
                 "--os", "debian", self.branch]
-            for arg in kernel_args:
+            for arg in self.kernel_args:
                 ostree_deploy.append(f"--karg={arg}")
             utils.run_command(ostree_deploy)
 
@@ -82,7 +71,8 @@ class OstreeDeployPlugin(OstreeBase):
             shutil.copytree(self.rootfs.joinpath("boot/ostree"),
                             self.rootfs.joinpath("efi/ostree"))
             shutil.copy2(
-                self.rootfs.joinpath("boot/loader/entries/ostree-1-debian.conf"),
+                self.rootfs.joinpath(
+                    "boot/loader/entries/ostree-1-debian.conf"),
                 self.rootfs.joinpath("efi/loader/entries/ostree-0-1.conf"))
         finally:
             umount(self.rootfs)

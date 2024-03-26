@@ -27,10 +27,11 @@ class Base(ABC):
     def post_install(self):
         pass
 
+
 class OstreeBase(Base):
     def __init__(self, state, config, workspace):
         self.state = state
         self.config = config
         self.workspace = workspace
-        
+
         self.logging = logging.getLogger(__name__)

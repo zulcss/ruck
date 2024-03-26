@@ -8,9 +8,9 @@ SPDX-License-Identifier: Apache-2.0
 import logging
 import shutil
 
+from ruck.config import get_config
 from ruck import exceptions
 from ruck.stages.base import Base
-from ruck.config import get_config
 from ruck import utils
 
 
@@ -26,7 +26,7 @@ class BootstrapPlugin(Base):
         self.mmdebstrap = shutil.which("mmdebstrap")
         if not self.mmdebstrap:
             raise exceptions.CommandNotFoundError(
-                    "mmdebstroap is not found.")
+                "mmdebstroap is not found.")
         if not self.config.options.suite:
             raise exceptions.ConfigError(
                 "Suite is not specified.")
@@ -51,11 +51,11 @@ class BootstrapPlugin(Base):
             cmd.extend([f"--include={', '.join(packages)}"])
         customize_hooks = get_config(self.config, "options.customize_hooks")
         if customize_hooks:
-            cmd.extend([f"--customize-hook={hook}" 
+            cmd.extend([f"--customize-hook={hook}"
                         for hook in customize_hooks])
         components = get_config(self.config, "options.compoents")
         if components:
-            cmd.extend([f"--components={','.join(scomponents)}"])
+            cmd.extend([f"--components={','.join(components)}"])
         variant = get_config(self.config, "options.varant")
         if variant:
             cmd.extend([f"--variant={variant}"])
@@ -71,10 +71,11 @@ class BootstrapPlugin(Base):
                         for hook in extract_hooks])
         essential_hooks = get_config(self.config, "options.essential_hooks")
         if essential_hooks:
-            cmd.extend([f"--essential-hook={hook}" for hook in eseential_hooks])
+            cmd.extend([f"--essential-hook={hook}"
+                        for hook in essential_hooks])
         apt_hooks = get_config(self.config, "options.apt_hooks")
         if apt_hooks:
-            cmd.extend([f"--aptopt={hook}" for hook in apt_hookss])
+            cmd.extend([f"--aptopt={hook}" for hook in apt_hooks])
         mode = get_config(self.config, "options.mode")
         if mode:
             cmd.extend([f"--mode={mode}"])

@@ -5,17 +5,14 @@ SPDX-License-Identifier: Apache-2.0
 
 """
 import hashlib
-import logging
 import os
-import pathlib
 import shutil
-import sys
 import subprocess
+import sys
 
 from ruck.archive import unpack
-from ruck import exceptions
 from ruck.stages.base import OstreeBase
-from ruck import utils
+
 
 def ostree(*args, _input=None, **kwargs):
     args = list(args) + [f'--{k}={v}' for k, v in kwargs.items()]
@@ -43,7 +40,7 @@ class OstreePrepPlugin(OstreeBase):
         unpack(self.target, self.rootfs)
 
         self._setup_boot(self.rootfs.joinpath("boot"),
-                        self.rootfs.joinpath("usr/lib/ostree-boot"))
+                         self.rootfs.joinpath("usr/lib/ostree-boot"))
         self._convert_to_ostree()
         self.logging.info("Commiting to ostree")
         ostree("commit",

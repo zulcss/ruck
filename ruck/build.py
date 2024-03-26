@@ -25,7 +25,7 @@ class Build(object):
         self.logging.info("Running ruck.")
 
         self.logging.info(
-           f"Loading configuration file: {self.state.config}")
+            f"Loading configuration file: {self.state.config}")
         if not self.state.config.exists():
             exceptions.ConfigError(
                 f"Failed to load configuration: {self.state.config}")
@@ -39,7 +39,7 @@ class Build(object):
         if config.architecture not in self.arch:
             raise exceptions.ConfigError(
                 f"{config.architecture} is not supported.")
-        
+
         if config.version is None:
             raise exceptions.ConfigError("Version si not specified..")
         if config.schemaVersion is None:
@@ -51,13 +51,13 @@ class Build(object):
         self.workspace = self.state.workspace.joinpath(config.name)
         self.logging.info(f"Setting up workspace: {self.workspace}")
         self.workspace.mkdir(parents=True, exist_ok=True)
-        
+
         self.logging.info("Copying configuration to workspace.")
         shutil.copytree(
             self.state.config.parent,
             self.workspace,
             dirs_exist_ok=True)
-    
+
         if config.phases:
             self.logging.info("Running phases...")
             for p in config.phases:
@@ -65,12 +65,12 @@ class Build(object):
 
                 self.logging.info(f"Loading {p.stage} step.")
                 mgr = driver.DriverManager(
-                        namespace="ruck.stages",
-                        name=p.stage,
-                        invoke_on_load=True,
-                        invoke_args=(self.state, p,
-                                     self.workspace)
-                      )
+                    namespace="ruck.stages",
+                    name=p.stage,
+                    invoke_on_load=True,
+                    invoke_args=(self.state, p,
+                                 self.workspace)
+                    )
 
                 self.logging.info("Running preflight check.")
                 mgr.driver.preflight_check()
@@ -82,5 +82,5 @@ class Build(object):
                 mgr.driver.post_install()
 
         else:
-            raise exception.ConfigException(
+            raise exceptions.ConfigException(
                 "No phases found please check the manifest.")

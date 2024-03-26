@@ -34,13 +34,13 @@ class RepartPlugin(Base):
             raise exceptions.ConfigError(
                 "Image size is not specified.")
         self.image = self.workspace.joinpath(
-                        self.config.options.image)
+            self.config.options.image)
         if self.image.exists():
             # systemd-repart errors out if image already exists.
             self.logging.info(f"Removing {self.image}")
             os.unlink(self.image)
         self.definitions = self.workspace.joinpath(
-                self.config.options.definitions)
+            self.config.options.definitions)
         if not self.definitions.exists():
             raise exceptions.ConfigError(
                 f"{self.definitions} does not exist.")

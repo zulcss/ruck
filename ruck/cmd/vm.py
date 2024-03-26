@@ -36,6 +36,7 @@ def show(state):
 def create(state, name, disk):
     VM(state).create()
 
+
 @click.command(
     help="Shutdown and remove virtual macine."
 )
@@ -43,6 +44,7 @@ def create(state, name, disk):
 @name_option
 def shutdown(state, name):
     VM(state).shutdown()
+
 
 vm.add_command(show)
 vm.add_command(create)

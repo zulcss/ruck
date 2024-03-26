@@ -1,7 +1,13 @@
+"""
+Copyright (c) 2024 Wind River Systems, Inc.
+
+SPDX-License-Identifier: Apache-2.0
+"""
 import pathlib
 
 from ruck.stages.base import OstreeBase
 from ruck import utils
+
 
 class OstreeInitPlugin(OstreeBase):
     def preflight_check(self):

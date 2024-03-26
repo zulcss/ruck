@@ -10,9 +10,11 @@ import yaml
 
 from ruck import exceptions
 
+
 def get_config(config, subkey):
     return OmegaConf.select(
         config, subkey, throw_on_missing=False)
+
 
 def include_constructor(loader, node):
     filename = node.value
@@ -29,6 +31,7 @@ yaml.add_constructor("!include", include_constructor, Loader=yaml.SafeLoader)
 
 class Config(object):
     """load the configuration file from the CLI."""
+
     def __init__(self, state):
         self.state = state
 
@@ -41,6 +44,6 @@ class Config(object):
                 except yaml.YAMLError as error:
                     raise exceptions.ConfigError(
                         f"{self.state.config} failed validateion: {error}.")
-        except OSError as e:
+        except OSError:
             raise exceptions.ConfigError(
-            f"Configuration not found: {self.sstate.config}")
+                f"Configuration not found: {self.sstate.config}")
