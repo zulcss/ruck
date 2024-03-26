@@ -40,7 +40,7 @@ phases:
     stage: parted
     options: !include manifests/disk.yaml
   - name: "Deploy ostree branch to the disk."
-    step: ostree_deploy
+    stage: ostree_deploy
     options:
       repo: ${params.repo}
       branch: ${params.branch}
