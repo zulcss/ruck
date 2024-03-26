@@ -65,3 +65,5 @@ workspace
 
 # vagrant boxes
 .vagrant
+
+*.bak
