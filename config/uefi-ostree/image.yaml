@@ -31,7 +31,7 @@ phases:
       repo: ${params.repo}
       mode: archive-z2
   - name: "Prepare ostree branch."
-    step: ostree_prep
+    stage: ostree_prep
     options:
       repo: ${params.repo}
       branch: ${params.branch}

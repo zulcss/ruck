@@ -9,8 +9,6 @@ from abc import ABC
 from abc import abstractmethod
 import logging
 
-from ruck.ostree import Ostree
-
 
 class Base(ABC):
     def __init__(self):
@@ -34,6 +32,5 @@ class OstreeBase(Base):
         self.state = state
         self.config = config
         self.workspace = workspace
-        self.ostree = Ostree(self.state)
         
         self.logging = logging.getLogger(__name__)
