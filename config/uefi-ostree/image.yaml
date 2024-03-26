@@ -38,10 +38,10 @@ phases:
       target: ${params.tarball}
   - name: "Partition and format the disk."
     stage: parted
-    options: !include manifests/disk.yaml
+    options: !include manifests/parted.yaml
   - name: "Deploy ostree branch to the disk."
     stage: ostree_deploy
-    options:
+     options:
       repo: ${params.repo}
       branch: ${params.branch}
       image: ${params.image}

@@ -1,0 +1,23 @@
+---
+image:
+  name: ${params.image}
+  size: 10G
+  label: gpt
+partitions:
+  - name: EFI
+    start: 0%
+    end: 256MB
+    flags: [boot, esp]
+  - name: ROOT
+    start: 256MB
+    end: 100%
+    flags: []
+filesystems:
+  - name: EFI
+    label: EFI
+    fs: vfat
+    options: []
+  - name: ROOT
+    label: ROOT
+    fs: ext4
+    options: []
