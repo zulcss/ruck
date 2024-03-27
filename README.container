@@ -1,10 +1,28 @@
-How to run ruck in container
+To create a dev environment for ruck
 
-docker build -t ruck docker/
-docker run -i -t --privileged -v /sys:/sys -v /dev:/dev -v /run:/run -v $(pwd):/usr/src ruck
+1. Build the dev container from the main directory, run:
 
-Inside the container:
+    tools/build-container.sh
 
-pip install -r requirements.txt
-export PBR_VERSION=1.0.0
-pip install -e .
+2. To run the dev container from the main directory, run:
+
+    tools/run-container.sh-
+
+== Building ruck ==
+
+1. Install tiler
+
+    PBR_VERSION=1.2.3 pip3 install -e . --break-system-packages
+
+2. Run ruck
+
+   ruck help
+
+== Building an ostree branch == 
+
+To build an ostree branch.
+
+1. cd config/uefi-ostree
+
+2. ruck build --config image.yaml
+
