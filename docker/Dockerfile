@@ -24,14 +24,13 @@ RUN apt-get update && \
         libgirepository1.0-dev \
         parted \
         fdisk \
-        debos \
-        rsync \
         dosfstools \
         gir1.2-ostree-1.0 \
         git && \
         rm -rf /var/lib/apt/lists/*
 
 COPY files/pip.conf /etc/pip.conf
+RUN pip install omegaconf
 
 # Needed for uefi-ostree
 RUN mkdir -p /var/www/html

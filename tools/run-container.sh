@@ -1,6 +1,12 @@
 #!/bin/bash
 
-sudo podman run \
-    --privileged \
-    -v $(pwd):/work \
+docker run \
+     -i -t --privileged \
+     -v $(pwd):/usr/src \
+     -v $(pwd)/data:/var/tmp/ruck \
+     -v /dev:/dev \
+     -v /run:/run \
+     -v /sys:/sys \
+     -v /var/tmp:/var/tmp \
+    -v $(pwd):/usr/src \
     -i -t ruck \

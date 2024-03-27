@@ -67,3 +67,4 @@ workspace
 .vagrant
 
 *.bak
+data
