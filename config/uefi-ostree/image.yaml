@@ -16,7 +16,7 @@ steps:
   - step: ostree_init
     options:
       repo: /var/www/html/repo
-      mode: bare
+      mode: archive-z2
   - step: ostree_prep
     options:
       repo: /var/www/html/repo

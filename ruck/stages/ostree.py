@@ -33,13 +33,14 @@ class OstreeBase(Base):
 
 class OstreeInitPlugin(OstreeBase):
     def run(self):
-        self.logging.info("Creating ostree repository.")
-
         repo = pathlib.Path(self.options.get("repo"))
+        mode = self.options.get("mode") or "archive-z2"
+
+        self.logging.info(f"Creating ostree repository {repo}, mode {mode}.")
 
         if not repo.exists():
             utils.run_command(
-                ["ostree", "init", "--repo", repo])
+                ["ostree", "init", "--repo", repo, "--mode", mode])
 
 
 class OstreeDeployPlugin(OstreeBase):
