@@ -1,6 +1,6 @@
 ---
 name: pablo-uefi-arm64
-description: "AMD64 example configuration."
+description: "ARM64 example configuration."
 architecture: arm64
 version: 0.1
 schemaVersion: 1
