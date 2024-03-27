@@ -13,7 +13,7 @@ class OstreeInitPlugin(OstreeBase):
     def preflight_check(self):
         self.logging.info("Creating ostree repository.")
         self.repo = pathlib.Path(self.config.options.repo)
-        self.mode = self.config.get.options.mode
+        self.mode = self.config.options.mode
 
     def run(self):
         if self.repo.exists():
