@@ -1,0 +1,34 @@
+---
+name: pablo-uefi-arm64
+description: "AMD64 example configuration."
+architecture: arm64
+version: 0.1
+schemaVersion: 1
+params:
+  version: ${version}
+  tarball: pablo-rootfs-${version}-${architecture}.tar.gz
+phases:
+  - name: "Creating tarball."
+    stage: bootstrap
+    options:
+      suite: bookworm
+      target: ${params.tarball}
+      architecture: ${architecture}
+      setup_hooks:
+        - 'sync-in overlay/debian/ /'
+      customize_hooks:
+        - echo 'root:root' | chroot "$1" chpasswd
+        - systemctl enable --root="$1" systemd-networkd
+        - chroot $1 echo "localhost" > $1/etc/hostname
+      packages: !include manifests/software.yaml
+  - name: "Creating image"
+    stage: repart
+    options:
+      image: pablo-image-${version}-${architecture}.img
+      size: 20G
+      definitions: partitions
+  - name: "Unpack tarball"
+    stage: deploy
+    options:
+      source: pablo-rootfs-${version}-${architecture}.tar.gz
+      target: pablo-image-${version}-${architecture}.img
