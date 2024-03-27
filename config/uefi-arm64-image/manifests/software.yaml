@@ -1,5 +1,5 @@
 ---
-- grub-efi-arm64
+- systemd-boot
 - linux-image-arm64
 - ca-certificates
 - vim
