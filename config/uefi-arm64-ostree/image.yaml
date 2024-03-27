@@ -1,0 +1,52 @@
+---
+name: pablo-ostree-arm64
+description: "ARM64 ostree configuration."
+architecture: arm64
+version: 0.1
+schemaVersion: 1
+params:
+  version: $[version}
+  tarball: pablo-rootfs-${version}-${architecture}.tar.gz
+  repo: /var/www/html/repo
+  image: pablo-image-ostree-${version}-${architecture}.img
+  branch: exampleos/testing
+phases:
+  - name: "Create rootfs"
+    stage: bootstrap
+    options:
+      suite: bookworm
+      target: ${params.tarball}
+      architecture: ${architecture}
+      setup_hooks:
+        - 'sync-in overlay/debian/ /'
+      customize_hooks:
+        - echo 'root:root' | chroot "$1" chpasswd
+        - systemctl enable --root="$1" systemd-networkd
+        - chroot $1 echo "localhost" > $1/etc/hostname
+        - mkdir -p $1/efi
+      packages: !include manifests/software.yaml
+  - name: "Create ostree repository"
+    stage: ostree_init
+    options:
+      repo: ${params.repo}
+      mode: archive-z2
+  - name: "Create an ostree branch."
+    stage: ostree_prep
+    options:
+      repo: ${params.repo}
+      branch: ${params.branch}
+      target: ${params.tarball}
+  - name: "Partition and format the disk."
+    stage: parted
+    options: !include manifests/parted.yaml
+  - name: "Deploy ostree branch to the disk."
+    stage: ostree_deploy
+    options:
+      repo: ${params.repo}
+      branch: ${params.branch}
+      image: ${params.image}
+      kernel_args:
+        - root=LABEL=ROOT
+        - rw
+        - console=tty0
+        - console=ttyS0,115200n8
