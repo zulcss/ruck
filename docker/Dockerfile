@@ -25,6 +25,9 @@ RUN apt-get update && \
         parted \
         fdisk \
         dosfstools \
+        parted \
+        udev \
+        systemd-boot \
         gir1.2-ostree-1.0 \
         git && \
         rm -rf /var/lib/apt/lists/*

@@ -8,7 +8,4 @@ Debian OS Builder
 * Documentation: https://docs.openstack.org/ruck/latest
 * Source: https://github.com/zulcss/ruck
 
-Features
---------
-
-* TODO
+See README.container for building and using ruck.

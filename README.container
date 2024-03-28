@@ -1,16 +1,19 @@
 To create a dev environment for ruck
 
+In order to use ruck in a container you be using docker. The host should be
+running a Debian based Linux distrobution.
+
 1. Build the dev container from the main directory, run:
 
     tools/build-container.sh
 
 2. To run the dev container from the main directory, run:
 
-    tools/run-container.sh-
+    tools/run-container.sh
 
 == Building ruck ==
 
-1. Install tiler
+1. Install ruck
 
     PBR_VERSION=1.2.3 pip3 install -e . --break-system-packages
 
@@ -19,6 +22,9 @@ To create a dev environment for ruck
    ruck help
 
 == Building an ostree branch == 
+
+In order to build an ostree based image, modify the image.yaml for your
+own needs. 
 
 To build an ostree branch.
 
