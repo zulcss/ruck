@@ -6,6 +6,7 @@ SPDX-License-Identifier: Apache-2.0
 """
 
 import logging
+import os
 import shutil
 
 from ruck.config import get_config
@@ -49,6 +50,12 @@ class BootstrapPlugin(Base):
         packages = get_config(self.config, "options.packages")
         if packages:
             cmd.extend([f"--include={', '.join(packages)}"])
+
+        repo = get_config(self.config, "options.repo")
+        if repo:
+            if not os.path.isfile(repo) and not os.path.exists():
+                raise exceptions.ConfigError(
+                    "Repo configuration is not a file")
         customize_hooks = get_config(self.config, "options.customize_hooks")
         if customize_hooks:
             cmd.extend([f"--customize-hook={hook}"
@@ -90,6 +97,9 @@ class BootstrapPlugin(Base):
         target = self.workspace.joinpath(
             get_config(self.config, "options.target"))
         cmd.extend([suite, target])
+        if repo is not None:
+            # include our mirror from the manifest.
+            cmd.extend([suite])
         utils.run_command(cmd)
 
     def post_install(self):
