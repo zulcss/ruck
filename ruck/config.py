@@ -46,4 +46,4 @@ class Config(object):
                         f"{self.state.config} failed validateion: {error}.")
         except OSError:
             raise exceptions.ConfigError(
-                f"Configuration not found: {self.sstate.config}")
+                f"Configuration not found: {self.state.config}")

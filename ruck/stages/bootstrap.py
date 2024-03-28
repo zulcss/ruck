@@ -56,6 +56,7 @@ class BootstrapPlugin(Base):
             if not os.path.isfile(repo) and not os.path.exists():
                 raise exceptions.ConfigError(
                     "Repo configuration is not a file")
+            repo = self.workspace.joinpath(repo)
         customize_hooks = get_config(self.config, "options.customize_hooks")
         if customize_hooks:
             cmd.extend([f"--customize-hook={hook}"
@@ -99,7 +100,7 @@ class BootstrapPlugin(Base):
         cmd.extend([suite, target])
         if repo is not None:
             # include our mirror from the manifest.
-            cmd.extend([suite])
+            cmd.extend([repo])
         utils.run_command(cmd)
 
     def post_install(self):
