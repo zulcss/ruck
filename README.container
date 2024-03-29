@@ -19,7 +19,7 @@ running a Debian based Linux distrobution.
 
 2. Run ruck
 
-   ruck help
+   ruck --help
 
 == Building an ostree branch == 
 
@@ -28,7 +28,13 @@ own needs.
 
 To build an ostree branch.
 
-1. cd config/uefi-ostree
+1. For x86-64
+
+     cd config/uefi-ostree
+
+   Or for arm64
+
+     cd config/uefi-arm64-ostree
 
 2. ruck build --config image.yaml
 

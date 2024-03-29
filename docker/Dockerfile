@@ -32,11 +32,14 @@ RUN apt-get update && \
         git && \
         rm -rf /var/lib/apt/lists/*
 
+RUN if [ "$(uname -m)" = "x86_64" ]; then apt update && apt install qemu-user-static arch-test -y; fi
+
 COPY files/pip.conf /etc/pip.conf
 RUN pip install omegaconf
 
 # Needed for uefi-ostree
 RUN mkdir -p /var/www/html
 
-RUN mkdir -p usr/src
+RUN mkdir -p /usr/src
 
+WORKDIR /usr/src
