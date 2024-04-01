@@ -3,11 +3,15 @@ To create a dev environment for ruck
 In order to use ruck in a container you be using docker. The host should be
 running a Debian based Linux distrobution.
 
-1. Build the dev container from the main directory, run:
+1. If assemble arm64 image in amd64 container, install qemu-user-static
+
+    sudo apt install qemu-user-static -y
+
+2. Build the dev container from the main directory, run:
 
     tools/build-container.sh
 
-2. To run the dev container from the main directory, run:
+3. To run the dev container from the main directory, run:
 
     tools/run-container.sh
 

@@ -8,5 +8,4 @@ docker run \
      -v /run:/run \
      -v /sys:/sys \
      -v /var/tmp:/var/tmp \
-    -v $(pwd):/usr/src \
     -i -t ruck \
