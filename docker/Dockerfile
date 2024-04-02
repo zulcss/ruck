@@ -1,4 +1,4 @@
-FROM debian:testing
+FROM debian:bookworm
 
 # Don't pin the packages versions to exact values
 # hadolint ignore=DL3008
@@ -32,6 +32,8 @@ RUN apt-get update && \
         gir1.2-ostree-1.0 \
         git && \
         rm -rf /var/lib/apt/lists/*
+
+RUN if [ "$(uname -m)" = "x86_64" ]; then apt update && apt install qemu-user-static arch-test -y; fi
 
 COPY files/pip.conf /etc/pip.conf
 RUN pip install omegaconf
